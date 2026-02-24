@@ -76,8 +76,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
     setError("");
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setError("");
 
     // All validation in JS — no native browser validation (form has noValidate)
@@ -105,8 +104,12 @@ export default function BookingForm({ services }: { services: Service[] }) {
       setError("Please enter a valid ZIP code (e.g., 45202 or 45202-1234).");
       return;
     }
-    if (!form.booking_date) {
-      setError("Please select a date.");
+    if (!form.booking_date || !/^\d{4}-\d{2}-\d{2}$/.test(form.booking_date)) {
+      setError("Please enter a valid date in YYYY-MM-DD format (e.g. 2026-04-15).");
+      return;
+    }
+    if (form.booking_date <= new Date().toISOString().split("T")[0]) {
+      setError("Please choose a future date.");
       return;
     }
     if (!form.booking_time) {
@@ -196,7 +199,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
   const availableSlots = ALL_TIME_SLOTS.filter((slot) => !bookedSlots.includes(slot));
 
   return (
-    <form onSubmit={handleSubmit} noValidate autoComplete="on" className="space-y-8">
+    <div className="space-y-8">
       {/* Service Selection */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h2 className="text-xl font-bold text-gray-900 mb-4">1. Choose Your Service</h2>
@@ -339,9 +342,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
               name="booking_date"
               value={form.booking_date}
               onChange={handleChange}
-              min={minDate}
-              placeholder="YYYY-MM-DD"
-              onFocus={(e) => { e.target.type = "date"; }}
+              placeholder="YYYY-MM-DD (e.g. 2026-04-15)"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             />
           </div>
@@ -414,12 +415,13 @@ export default function BookingForm({ services }: { services: Service[] }) {
       )}
 
       <button
-        type="submit"
+        type="button"
+        onClick={handleSubmit}
         disabled={submitting || !form.service_id}
         className="w-full bg-orange-500 text-white py-4 rounded-lg font-semibold text-lg hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {submitting ? "Submitting..." : "Confirm Booking"}
       </button>
-    </form>
+    </div>
   );
 }
