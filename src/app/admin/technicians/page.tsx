@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 interface Technician {
   id: string;
@@ -19,6 +19,13 @@ export default function TechniciansPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState("");
+
+  // Kill ALL native browser validation
+  const suppressValidation = useCallback((e: Event) => e.preventDefault(), []);
+  useEffect(() => {
+    document.addEventListener("invalid", suppressValidation, true);
+    return () => document.removeEventListener("invalid", suppressValidation, true);
+  }, [suppressValidation]);
   const [submitting, setSubmitting] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -178,7 +185,6 @@ export default function TechniciansPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
                 <input
                   type="text"
-                  inputMode="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -188,7 +194,6 @@ export default function TechniciansPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
                 <input
                   type="text"
-                  inputMode="tel"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"

@@ -31,6 +31,13 @@ export default function BookingForm({ services }: { services: Service[] }) {
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
 
+  // Kill ALL native browser validation — prevents "did not match expected pattern" in every browser
+  useEffect(() => {
+    const suppress = (e: Event) => e.preventDefault();
+    document.addEventListener("invalid", suppress, true);
+    return () => document.removeEventListener("invalid", suppress, true);
+  }, []);
+
   const [form, setForm] = useState({
     customer_name: "",
     customer_email: "",
@@ -253,7 +260,6 @@ export default function BookingForm({ services }: { services: Service[] }) {
               type="text"
               name="customer_email"
               autoComplete="email"
-              inputMode="email"
               value={form.customer_email}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -266,7 +272,6 @@ export default function BookingForm({ services }: { services: Service[] }) {
               type="text"
               name="customer_phone"
               autoComplete="tel"
-              inputMode="tel"
               value={form.customer_phone}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -279,7 +284,6 @@ export default function BookingForm({ services }: { services: Service[] }) {
               type="text"
               name="customer_zip"
               autoComplete="postal-code"
-              inputMode="numeric"
               value={form.customer_zip}
               onChange={handleChange}
               placeholder="45202"
