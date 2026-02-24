@@ -59,8 +59,7 @@ export default function TechniciansPage() {
     setError("");
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setSubmitting(true);
     setError("");
 
@@ -151,7 +150,7 @@ export default function TechniciansPage() {
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             {editingId ? "Edit Technician" : "Add New Technician"}
           </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -161,7 +160,6 @@ export default function TechniciansPage() {
                   type="text"
                   value={form.first_name}
                   onChange={(e) => setForm({ ...form, first_name: e.target.value })}
-                  required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
               </div>
@@ -173,27 +171,26 @@ export default function TechniciansPage() {
                   type="text"
                   value={form.last_name}
                   onChange={(e) => setForm({ ...form, last_name: e.target.value })}
-                  required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
                 <input
-                  type="email"
+                  type="text"
+                  inputMode="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
                 <input
-                  type="tel"
+                  type="text"
+                  inputMode="tel"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
               </div>
@@ -229,7 +226,8 @@ export default function TechniciansPage() {
 
             <div className="flex gap-3">
               <button
-                type="submit"
+                type="button"
+                onClick={handleSubmit}
                 disabled={submitting}
                 className="bg-orange-500 text-white px-6 py-2 rounded-lg font-medium text-sm hover:bg-orange-600 transition-colors disabled:opacity-50"
               >
@@ -247,7 +245,7 @@ export default function TechniciansPage() {
                 Cancel
               </button>
             </div>
-          </form>
+          </div>
         </div>
       )}
 

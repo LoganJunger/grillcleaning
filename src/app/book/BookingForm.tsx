@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import CalendarPicker from "@/components/CalendarPicker";
+import AddressAutocomplete from "@/components/AddressAutocomplete";
 
 interface Service {
   id: string;
@@ -60,7 +62,6 @@ export default function BookingForm({ services }: { services: Service[] }) {
       .then((res) => res.json())
       .then((data) => {
         setBookedSlots(data.booked || []);
-        // Clear selected time if it's now booked
         if (data.booked?.includes(form.booking_time)) {
           setForm((f) => ({ ...f, booking_time: "" }));
         }
@@ -105,7 +106,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
       return;
     }
     if (!form.booking_date || !/^\d{4}-\d{2}-\d{2}$/.test(form.booking_date)) {
-      setError("Please enter a valid date in YYYY-MM-DD format (e.g. 2026-04-15).");
+      setError("Please select a date.");
       return;
     }
     if (form.booking_date <= new Date().toISOString().split("T")[0]) {
@@ -205,22 +206,16 @@ export default function BookingForm({ services }: { services: Service[] }) {
         <h2 className="text-xl font-bold text-gray-900 mb-4">1. Choose Your Service</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           {services.map((service) => (
-            <label
+            <button
               key={service.id}
-              className={`block border-2 rounded-lg p-4 cursor-pointer transition-colors ${
+              type="button"
+              onClick={() => { setForm({ ...form, service_id: service.id }); setError(""); }}
+              className={`block border-2 rounded-lg p-4 cursor-pointer transition-colors text-left ${
                 form.service_id === service.id
                   ? "border-orange-500 bg-orange-50"
                   : "border-gray-200 hover:border-gray-300"
               }`}
             >
-              <input
-                type="radio"
-                name="service_id"
-                value={service.id}
-                checked={form.service_id === service.id}
-                onChange={handleChange}
-                className="sr-only"
-              />
               <div className="flex justify-between items-start mb-2">
                 <span className="font-semibold text-gray-900">{service.name}</span>
                 <span className="font-bold text-orange-500">
@@ -228,7 +223,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
                 </span>
               </div>
               <p className="text-sm text-gray-500">{service.description}</p>
-            </label>
+            </button>
           ))}
         </div>
       </div>
@@ -292,15 +287,20 @@ export default function BookingForm({ services }: { services: Service[] }) {
             />
           </div>
           <div className="sm:col-span-2">
-            <label htmlFor="customer_address" className="block text-sm font-medium text-gray-700 mb-1">Street Address *</label>
-            <input
-              id="customer_address"
-              type="text"
-              name="customer_address"
-              autoComplete="street-address"
+            <label className="block text-sm font-medium text-gray-700 mb-1">Street Address *</label>
+            <AddressAutocomplete
               value={form.customer_address}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              onChange={(val) => { setForm({ ...form, customer_address: val }); setError(""); }}
+              onSelect={(s) => {
+                setForm((f) => ({
+                  ...f,
+                  customer_address: s.street || f.customer_address,
+                  customer_city: s.city || f.customer_city,
+                  customer_state: s.state || f.customer_state,
+                  customer_zip: s.zip || f.customer_zip,
+                }));
+                setError("");
+              }}
             />
           </div>
           <div>
@@ -335,15 +335,11 @@ export default function BookingForm({ services }: { services: Service[] }) {
         <h2 className="text-xl font-bold text-gray-900 mb-4">3. Pick a Date & Time</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="booking_date" className="block text-sm font-medium text-gray-700 mb-1">Preferred Date *</label>
-            <input
-              id="booking_date"
-              type="text"
-              name="booking_date"
+            <label className="block text-sm font-medium text-gray-700 mb-1">Preferred Date *</label>
+            <CalendarPicker
               value={form.booking_date}
-              onChange={handleChange}
-              placeholder="YYYY-MM-DD (e.g. 2026-04-15)"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              onChange={(date) => { setForm({ ...form, booking_date: date }); setError(""); }}
+              minDate={minDate}
             />
           </div>
           <div>
