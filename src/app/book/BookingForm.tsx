@@ -247,7 +247,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
               id="customer_name"
               type="text"
               name="customer_name"
-              autoComplete="name"
+              autoComplete="off"
               value={form.customer_name}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -259,7 +259,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
               id="customer_email"
               type="text"
               name="customer_email"
-              autoComplete="email"
+              autoComplete="off"
               value={form.customer_email}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -271,7 +271,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
               id="customer_phone"
               type="text"
               name="customer_phone"
-              autoComplete="tel"
+              autoComplete="off"
               value={form.customer_phone}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -283,7 +283,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
               id="customer_zip"
               type="text"
               name="customer_zip"
-              autoComplete="postal-code"
+              autoComplete="off"
               value={form.customer_zip}
               onChange={handleChange}
               placeholder="45202"
@@ -313,7 +313,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
               id="customer_city"
               type="text"
               name="customer_city"
-              autoComplete="address-level2"
+              autoComplete="off"
               value={form.customer_city}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -325,7 +325,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
               id="customer_state"
               type="text"
               name="customer_state"
-              autoComplete="address-level1"
+              autoComplete="off"
               value={form.customer_state}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
