@@ -22,6 +22,18 @@ const ALL_TIME_SLOTS = [
   "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM",
 ];
 
+/** Safely parse a fetch Response as JSON. Returns null if the body is empty or not JSON. */
+async function safeJson(res: Response): Promise<Record<string, unknown> | null> {
+  const text = await res.text();
+  if (!text) return null;
+  try {
+    return JSON.parse(text);
+  } catch {
+    console.error("[BookingForm] Response was not JSON:", res.status, text.slice(0, 200));
+    return null;
+  }
+}
+
 export default function BookingForm({ services }: { services: Service[] }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -30,13 +42,6 @@ export default function BookingForm({ services }: { services: Service[] }) {
   const [paymentLink, setPaymentLink] = useState("");
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
-
-  // Kill ALL native browser validation — prevents "did not match expected pattern" in every browser
-  useEffect(() => {
-    const suppress = (e: Event) => e.preventDefault();
-    document.addEventListener("invalid", suppress, true);
-    return () => document.removeEventListener("invalid", suppress, true);
-  }, []);
 
   const [form, setForm] = useState({
     customer_name: "",
@@ -66,14 +71,23 @@ export default function BookingForm({ services }: { services: Service[] }) {
     }
     setLoadingSlots(true);
     fetch(`/api/bookings/available-slots?date=${form.booking_date}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setBookedSlots(data.booked || []);
-        if (data.booked?.includes(form.booking_time)) {
+      .then(async (res) => {
+        const data = await safeJson(res);
+        if (!data) {
+          console.error("[BookingForm] Empty response from available-slots, status:", res.status);
+          setBookedSlots([]);
+          return;
+        }
+        const booked = (data.booked as string[]) || [];
+        setBookedSlots(booked);
+        if (booked.includes(form.booking_time)) {
           setForm((f) => ({ ...f, booking_time: "" }));
         }
       })
-      .catch(() => setBookedSlots([]))
+      .catch((err) => {
+        console.error("[BookingForm] Failed to fetch available slots:", err);
+        setBookedSlots([]);
+      })
       .finally(() => setLoadingSlots(false));
   }, [form.booking_date]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -126,6 +140,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
     }
 
     setSubmitting(true);
+    console.log("[BookingForm] Submitting booking:", { ...form, customer_email: "***" });
 
     try {
       const res = await fetch("/api/bookings", {
@@ -134,19 +149,26 @@ export default function BookingForm({ services }: { services: Service[] }) {
         body: JSON.stringify(form),
       });
 
+      const data = await safeJson(res);
+      console.log("[BookingForm] Response:", res.status, data);
+
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to create booking");
+        const msg = (data?.error as string) || `Server error (${res.status}). Please try again.`;
+        throw new Error(msg);
       }
 
-      const booking = await res.json();
-      setBookingId(booking.id);
-      if (booking.payment_token) {
-        setPaymentLink(`/pay/${booking.payment_token}`);
+      if (!data) {
+        throw new Error("Empty response from server. Please try again.");
+      }
+
+      setBookingId(data.id as string);
+      if (data.payment_token) {
+        setPaymentLink(`/pay/${data.payment_token}`);
       }
       setSubmitted(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      console.error("[BookingForm] Submit error:", err);
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -247,7 +269,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
               id="customer_name"
               type="text"
               name="customer_name"
-              autoComplete="off"
+              autoComplete="name"
               value={form.customer_name}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -259,7 +281,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
               id="customer_email"
               type="text"
               name="customer_email"
-              autoComplete="off"
+              autoComplete="email"
               value={form.customer_email}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -271,7 +293,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
               id="customer_phone"
               type="text"
               name="customer_phone"
-              autoComplete="off"
+              autoComplete="tel"
               value={form.customer_phone}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -283,7 +305,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
               id="customer_zip"
               type="text"
               name="customer_zip"
-              autoComplete="off"
+              autoComplete="postal-code"
               value={form.customer_zip}
               onChange={handleChange}
               placeholder="45202"
@@ -313,7 +335,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
               id="customer_city"
               type="text"
               name="customer_city"
-              autoComplete="off"
+              autoComplete="address-level2"
               value={form.customer_city}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -325,7 +347,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
               id="customer_state"
               type="text"
               name="customer_state"
-              autoComplete="off"
+              autoComplete="address-level1"
               value={form.customer_state}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"

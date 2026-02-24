@@ -7,21 +7,29 @@ const ALL_SLOTS = [
 ];
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const date = searchParams.get("date");
+  try {
+    const { searchParams } = new URL(request.url);
+    const date = searchParams.get("date");
 
-  if (!date) {
-    return NextResponse.json({ error: "date parameter required" }, { status: 400 });
+    if (!date) {
+      return NextResponse.json({ error: "date parameter required" }, { status: 400 });
+    }
+
+    const db = getDb();
+    const booked = db.prepare(
+      `SELECT booking_time FROM bookings
+       WHERE booking_date = ? AND status NOT IN ('cancelled')`
+    ).all(date) as { booking_time: string }[];
+
+    const bookedTimes = new Set(booked.map((b) => b.booking_time));
+    const availableSlots = ALL_SLOTS.filter((slot) => !bookedTimes.has(slot));
+
+    return NextResponse.json({ date, available: availableSlots, booked: Array.from(bookedTimes) });
+  } catch (err) {
+    console.error("[API] GET /api/bookings/available-slots error:", err);
+    return NextResponse.json(
+      { error: "Failed to check available slots", date: null, available: [], booked: [] },
+      { status: 500 }
+    );
   }
-
-  const db = getDb();
-  const booked = db.prepare(
-    `SELECT booking_time FROM bookings
-     WHERE booking_date = ? AND status NOT IN ('cancelled')`
-  ).all(date) as { booking_time: string }[];
-
-  const bookedTimes = new Set(booked.map((b) => b.booking_time));
-  const availableSlots = ALL_SLOTS.filter((slot) => !bookedTimes.has(slot));
-
-  return NextResponse.json({ date, available: availableSlots, booked: Array.from(bookedTimes) });
 }

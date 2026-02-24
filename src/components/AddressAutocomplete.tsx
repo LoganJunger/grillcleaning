@@ -49,11 +49,22 @@ export default function AddressAutocomplete({
       const res = await fetch(
         `/api/address-suggest?q=${encodeURIComponent(query)}`
       );
-      const data: Suggestion[] = await res.json();
+      if (!res.ok) {
+        console.error("[AddressAutocomplete] API error:", res.status);
+        setSuggestions([]);
+        return;
+      }
+      const text = await res.text();
+      if (!text) {
+        setSuggestions([]);
+        return;
+      }
+      const data: Suggestion[] = JSON.parse(text);
       setSuggestions(data);
       setShowSuggestions(data.length > 0);
       setActiveIndex(-1);
-    } catch {
+    } catch (err) {
+      console.error("[AddressAutocomplete] Fetch error:", err);
       setSuggestions([]);
     } finally {
       setLoading(false);
