@@ -79,7 +79,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
   const handleSubmit = async () => {
     setError("");
 
-    // All validation in JS — no native browser validation (form has noValidate)
+    // All validation in JS — no <form> element, no native browser validation
     if (!form.service_id) {
       setError("Please select a service.");
       return;
