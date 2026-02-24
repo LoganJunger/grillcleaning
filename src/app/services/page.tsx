@@ -1,16 +1,5 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
-
-interface Service {
-  id: string;
-  name: string;
-  description: string;
-  price_cents: number;
-  duration_minutes: number;
-  category: string;
-}
+import { getDb, Service } from "@/lib/db";
 
 function formatPrice(cents: number): string {
   return `$${(cents / 100).toFixed(0)}`;
@@ -36,18 +25,10 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function ServicesPage() {
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/services")
-      .then((res) => res.json())
-      .then((data) => {
-        setServices(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+  const db = getDb();
+  const services = db
+    .prepare("SELECT * FROM services WHERE is_active = 1 ORDER BY price_cents ASC")
+    .all() as Service[];
 
   return (
     <>
@@ -65,66 +46,59 @@ export default function ServicesPage() {
       {/* Services Grid */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-              <p className="mt-4 text-gray-500">Loading services...</p>
-            </div>
-          ) : (
-            <div className="grid md:grid-cols-2 gap-8">
-              {services.map((service) => (
-                <div
-                  key={service.id}
-                  className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
-                >
-                  <div className="p-8">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <span
-                          className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${
-                            categoryColors[service.category] || "bg-gray-100 text-gray-700"
-                          }`}
-                        >
-                          {categoryLabels[service.category] || service.category}
-                        </span>
-                        <h3 className="text-2xl font-bold text-gray-900">{service.name}</h3>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-3xl font-bold text-orange-500">
-                          {formatPrice(service.price_cents)}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 mb-6 leading-relaxed">{service.description}</p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                        <span>Approx. {formatDuration(service.duration_minutes)}</span>
-                      </div>
-                      <Link
-                        href={`/book?service=${service.id}`}
-                        className="bg-orange-500 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
+          <div className="grid md:grid-cols-2 gap-8">
+            {services.map((service) => (
+              <div
+                key={service.id}
+                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+              >
+                <div className="p-8">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <span
+                        className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${
+                          categoryColors[service.category] || "bg-gray-100 text-gray-700"
+                        }`}
                       >
-                        Book Now
-                      </Link>
+                        {categoryLabels[service.category] || service.category}
+                      </span>
+                      <h3 className="text-2xl font-bold text-gray-900">{service.name}</h3>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-3xl font-bold text-orange-500">
+                        {formatPrice(service.price_cents)}
+                      </p>
                     </div>
                   </div>
+                  <p className="text-gray-600 mb-6 leading-relaxed">{service.description}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      <span>Approx. {formatDuration(service.duration_minutes)}</span>
+                    </div>
+                    <Link
+                      href={`/book?service=${service.id}`}
+                      className="bg-orange-500 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
+                    >
+                      Book Now
+                    </Link>
+                  </div>
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
