@@ -1,5 +1,17 @@
+import type { Metadata } from "next";
 import { getDb, Service } from "@/lib/db";
 import BookingForm from "./BookingForm";
+
+export const metadata: Metadata = {
+  title: "Book a Grill Cleaning",
+  description:
+    "Schedule your professional grill cleaning in Cincinnati and the tri-state area. Choose your service, pick a date, and book online in minutes.",
+  openGraph: {
+    title: "Book a Grill Cleaning | Grill Revival Co.",
+    description:
+      "Schedule your professional grill cleaning online. Fast, easy booking with flexible scheduling.",
+  },
+};
 
 export default function BookPage() {
   const db = getDb();

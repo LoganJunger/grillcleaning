@@ -23,7 +23,7 @@ export default function Footer() {
                   />
                 </svg>
               </div>
-              <span className="text-lg font-bold text-white">Queen City Grill Cleaning</span>
+              <span className="text-lg font-bold text-white">Grill Revival Co.</span>
             </div>
             <p className="text-sm text-gray-400">
               Professional grill cleaning services in Cincinnati, OH and surrounding areas. We
@@ -83,7 +83,7 @@ export default function Footer() {
                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
-                info@queencitygrillcleaning.com
+                info@grillrevivalco.com
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -101,7 +101,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-500">
-          <p>&copy; {new Date().getFullYear()} Queen City Grill Cleaning. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Grill Revival Co.. All rights reserved.</p>
         </div>
       </div>
     </footer>

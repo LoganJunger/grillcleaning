@@ -27,7 +27,7 @@ export default function Header() {
               </svg>
             </div>
             <span className="text-xl font-bold text-gray-900">
-              Queen City <span className="text-orange-500">Grill Cleaning</span>
+              Grill <span className="text-orange-500">Revival Co.</span>
             </span>
           </Link>
 

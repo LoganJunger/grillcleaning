@@ -1,5 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getDb, Service } from "@/lib/db";
+
+export const metadata: Metadata = {
+  title: "Services & Pricing",
+  description:
+    "Grill Revival Co. offers professional grill cleaning services starting at $149. Basic cleaning, deep clean & restoration, seasonal tune-ups, and commercial grill service in Cincinnati, OH.",
+  openGraph: {
+    title: "Grill Cleaning Services & Pricing | Grill Revival Co.",
+    description:
+      "Professional grill cleaning starting at $149. View our services and book online today.",
+  },
+};
 
 function formatPrice(cents: number): string {
   return `$${(cents / 100).toFixed(0)}`;
@@ -24,6 +36,53 @@ const categoryColors: Record<string, string> = {
   commercial: "bg-blue-50 text-blue-700",
 };
 
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "How long does a grill cleaning take?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "A basic cleaning takes about 1 hour, while a deep clean and restoration can take up to 2 hours depending on the grill's condition.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Do I need to be home during the grill cleaning?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "We prefer you to be home for the initial walkthrough, but you don't need to supervise. We'll let you know when we're finished.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What types of grills do you clean?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "We clean all types including gas grills, charcoal grills, pellet smokers (Traeger, Pit Boss), kamado grills (Big Green Egg), and commercial units.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Are your grill cleaning products safe?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes! We use professional-grade, food-safe, and eco-friendly products. Your grill will be safe to cook on immediately after cleaning.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How often should I have my grill professionally cleaned?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "We recommend at least once a year, ideally at the start of grilling season. Heavy users should consider twice a year.",
+      },
+    },
+  ],
+};
+
 export default function ServicesPage() {
   const db = getDb();
   const services = db
@@ -32,6 +91,10 @@ export default function ServicesPage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       {/* Page Header */}
       <section className="bg-gray-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

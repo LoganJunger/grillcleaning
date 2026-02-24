@@ -56,11 +56,41 @@ function initializeDb(db: Database.Database) {
       status TEXT NOT NULL DEFAULT 'pending',
       notes TEXT,
       total_cents INTEGER NOT NULL,
+      payment_token TEXT UNIQUE,
+      payment_status TEXT NOT NULL DEFAULT 'unpaid',
+      reminder_sent INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (service_id) REFERENCES services(id),
       FOREIGN KEY (technician_id) REFERENCES technicians(id)
     );
+
+    CREATE TABLE IF NOT EXISTS activity_log (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      action TEXT NOT NULL,
+      entity_type TEXT NOT NULL,
+      entity_id TEXT,
+      details TEXT,
+      ip_address TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS email_log (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      recipient TEXT NOT NULL,
+      subject TEXT NOT NULL,
+      body TEXT NOT NULL,
+      email_type TEXT NOT NULL,
+      booking_id TEXT,
+      status TEXT NOT NULL DEFAULT 'sent',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (booking_id) REFERENCES bookings(id)
+    );
   `);
+
+  // Add new columns to existing bookings table if missing
+  try { db.exec(`ALTER TABLE bookings ADD COLUMN payment_token TEXT UNIQUE`); } catch { /* exists */ }
+  try { db.exec(`ALTER TABLE bookings ADD COLUMN payment_status TEXT NOT NULL DEFAULT 'unpaid'`); } catch { /* exists */ }
+  try { db.exec(`ALTER TABLE bookings ADD COLUMN reminder_sent INTEGER NOT NULL DEFAULT 0`); } catch { /* exists */ }
 
   // Seed default services if none exist
   const count = db.prepare("SELECT COUNT(*) as count FROM services").get() as { count: number };
@@ -154,5 +184,29 @@ export interface Booking {
   status: string;
   notes: string | null;
   total_cents: number;
+  payment_token: string | null;
+  payment_status: string;
+  reminder_sent: number;
+  created_at: string;
+}
+
+export interface ActivityLog {
+  id: number;
+  action: string;
+  entity_type: string;
+  entity_id: string | null;
+  details: string | null;
+  ip_address: string | null;
+  created_at: string;
+}
+
+export interface EmailLog {
+  id: number;
+  recipient: string;
+  subject: string;
+  body: string;
+  email_type: string;
+  booking_id: string | null;
+  status: string;
   created_at: string;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Service {
   id: string;
@@ -15,17 +15,9 @@ function formatPrice(cents: number): string {
   return `$${(cents / 100).toFixed(0)}`;
 }
 
-const timeSlots = [
-  "8:00 AM",
-  "9:00 AM",
-  "10:00 AM",
-  "11:00 AM",
-  "12:00 PM",
-  "1:00 PM",
-  "2:00 PM",
-  "3:00 PM",
-  "4:00 PM",
-  "5:00 PM",
+const ALL_TIME_SLOTS = [
+  "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
+  "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM",
 ];
 
 export default function BookingForm({ services }: { services: Service[] }) {
@@ -33,6 +25,9 @@ export default function BookingForm({ services }: { services: Service[] }) {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
   const [bookingId, setBookingId] = useState("");
+  const [paymentLink, setPaymentLink] = useState("");
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
 
   const [form, setForm] = useState({
     customer_name: "",
@@ -50,10 +45,29 @@ export default function BookingForm({ services }: { services: Service[] }) {
 
   const selectedService = services.find((s) => s.id === form.service_id);
 
-  // Get tomorrow as minimum date
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDate = tomorrow.toISOString().split("T")[0];
+
+  // Fetch available slots when date changes
+  useEffect(() => {
+    if (!form.booking_date) {
+      setBookedSlots([]);
+      return;
+    }
+    setLoadingSlots(true);
+    fetch(`/api/bookings/available-slots?date=${form.booking_date}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setBookedSlots(data.booked || []);
+        // Clear selected time if it's now booked
+        if (data.booked?.includes(form.booking_time)) {
+          setForm((f) => ({ ...f, booking_time: "" }));
+        }
+      })
+      .catch(() => setBookedSlots([]))
+      .finally(() => setLoadingSlots(false));
+  }, [form.booking_date]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -64,8 +78,15 @@ export default function BookingForm({ services }: { services: Service[] }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
     setError("");
+
+    // Client-side ZIP validation (removed HTML pattern to avoid browser error)
+    if (!/^\d{5}(-\d{4})?$/.test(form.customer_zip)) {
+      setError("Please enter a valid ZIP code (e.g., 45202 or 45202-1234).");
+      return;
+    }
+
+    setSubmitting(true);
 
     try {
       const res = await fetch("/api/bookings", {
@@ -81,6 +102,9 @@ export default function BookingForm({ services }: { services: Service[] }) {
 
       const booking = await res.json();
       setBookingId(booking.id);
+      if (booking.payment_token) {
+        setPaymentLink(`/pay/${booking.payment_token}`);
+      }
       setSubmitted(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -93,25 +117,15 @@ export default function BookingForm({ services }: { services: Service[] }) {
     return (
       <div className="bg-white rounded-xl shadow-sm border p-8 text-center">
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg
-            className="w-8 h-8 text-green-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
+          <svg className="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           Thank You, {form.customer_name}!
         </h2>
         <p className="text-gray-600 mb-6">
-          Your grill cleaning has been scheduled. We&apos;ll send a confirmation email to{" "}
+          Your grill cleaning has been scheduled. A confirmation email has been sent to{" "}
           <strong>{form.customer_email}</strong>.
         </p>
         <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left space-y-2">
@@ -134,13 +148,24 @@ export default function BookingForm({ services }: { services: Service[] }) {
             </span>
           </p>
         </div>
+        {paymentLink && (
+          <a
+            href={paymentLink}
+            className="inline-block bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors mb-4"
+          >
+            Pay Online Now
+          </a>
+        )}
         <p className="text-sm text-gray-500">
-          A technician will be assigned and you&apos;ll receive a reminder before your
-          appointment.
+          {paymentLink
+            ? "Pay online now or at the time of service. A technician will be assigned and you'll receive a reminder before your appointment."
+            : "A technician will be assigned and you'll receive a reminder before your appointment."}
         </p>
       </div>
     );
   }
+
+  const availableSlots = ALL_TIME_SLOTS.filter((slot) => !bookedSlots.includes(slot));
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -184,9 +209,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
         </h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
             <input
               type="text"
               name="customer_name"
@@ -197,9 +220,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
             <input
               type="email"
               name="customer_email"
@@ -210,9 +231,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Phone *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
             <input
               type="tel"
               name="customer_phone"
@@ -223,23 +242,19 @@ export default function BookingForm({ services }: { services: Service[] }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              ZIP Code *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code *</label>
             <input
               type="text"
               name="customer_zip"
               value={form.customer_zip}
               onChange={handleChange}
               required
-              pattern="[0-9]{5}"
+              placeholder="45202"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Street Address *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Street Address *</label>
             <input
               type="text"
               name="customer_address"
@@ -274,14 +289,10 @@ export default function BookingForm({ services }: { services: Service[] }) {
 
       {/* Date & Time */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">
-          3. Pick a Date & Time
-        </h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">3. Pick a Date & Time</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Preferred Date *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Preferred Date *</label>
             <input
               type="date"
               name="booking_date"
@@ -295,6 +306,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Preferred Time *
+              {loadingSlots && <span className="text-orange-500 ml-2 text-xs">Loading...</span>}
             </label>
             <select
               name="booking_time"
@@ -304,21 +316,32 @@ export default function BookingForm({ services }: { services: Service[] }) {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             >
               <option value="">Select a time</option>
-              {timeSlots.map((slot) => (
-                <option key={slot} value={slot}>
-                  {slot}
-                </option>
-              ))}
+              {form.booking_date ? (
+                availableSlots.length > 0 ? (
+                  availableSlots.map((slot) => (
+                    <option key={slot} value={slot}>{slot}</option>
+                  ))
+                ) : (
+                  <option value="" disabled>No slots available for this date</option>
+                )
+              ) : (
+                ALL_TIME_SLOTS.map((slot) => (
+                  <option key={slot} value={slot}>{slot}</option>
+                ))
+              )}
             </select>
+            {form.booking_date && bookedSlots.length > 0 && (
+              <p className="text-xs text-gray-400 mt-1">
+                {bookedSlots.length} slot{bookedSlots.length > 1 ? "s" : ""} already booked for this date
+              </p>
+            )}
           </div>
         </div>
       </div>
 
       {/* Notes */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">
-          4. Additional Notes (Optional)
-        </h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">4. Additional Notes (Optional)</h2>
         <textarea
           name="notes"
           value={form.notes}
@@ -335,12 +358,10 @@ export default function BookingForm({ services }: { services: Service[] }) {
           <h3 className="font-bold text-gray-900 mb-2">Order Summary</h3>
           <div className="flex justify-between text-gray-700 mb-1">
             <span>{selectedService.name}</span>
-            <span className="font-semibold">
-              {formatPrice(selectedService.price_cents)}
-            </span>
+            <span className="font-semibold">{formatPrice(selectedService.price_cents)}</span>
           </div>
           <p className="text-sm text-gray-500">
-            Payment collected at time of service. No upfront charge.
+            Pay online after booking or at the time of service.
           </p>
         </div>
       )}

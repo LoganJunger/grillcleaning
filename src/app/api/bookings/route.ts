@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb, Booking, Service } from "@/lib/db";
+import { logActivity } from "@/lib/logger";
+import { sendBookingConfirmation } from "@/lib/email";
 import { v4 as uuidv4 } from "uuid";
 
 export async function GET(request: NextRequest) {
@@ -30,6 +32,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const db = getDb();
   const body = await request.json();
+  const ip = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
 
   const {
     customer_name,
@@ -59,7 +62,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
-  // Get service price
+  // Get service info
   const service = db.prepare("SELECT * FROM services WHERE id = ?").get(service_id) as
     | Service
     | undefined;
@@ -68,13 +71,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid service selected" }, { status: 400 });
   }
 
+  // Check for time slot conflicts
+  const existing = db.prepare(
+    `SELECT id FROM bookings
+     WHERE booking_date = ? AND booking_time = ?
+     AND status NOT IN ('cancelled')`
+  ).get(booking_date, booking_time) as { id: string } | undefined;
+
+  if (existing) {
+    return NextResponse.json(
+      { error: "This time slot is already booked. Please choose a different time." },
+      { status: 409 }
+    );
+  }
+
   const id = `bk_${uuidv4().split("-")[0]}`;
+  const paymentToken = uuidv4();
 
   const stmt = db.prepare(`
     INSERT INTO bookings (id, customer_name, customer_email, customer_phone,
       customer_address, customer_city, customer_state, customer_zip,
-      service_id, booking_date, booking_time, notes, total_cents)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      service_id, booking_date, booking_time, notes, total_cents, payment_token)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   stmt.run(
@@ -90,10 +108,23 @@ export async function POST(request: NextRequest) {
     booking_date,
     booking_time,
     notes || null,
-    service.price_cents
+    service.price_cents,
+    paymentToken
   );
 
   const booking = db.prepare("SELECT * FROM bookings WHERE id = ?").get(id) as Booking;
+
+  // Log the activity
+  logActivity(
+    "booking_created",
+    "booking",
+    id,
+    `New booking: ${service.name} on ${booking_date} at ${booking_time} for ${customer_name}`,
+    ip
+  );
+
+  // Send confirmation email
+  sendBookingConfirmation(booking, service);
 
   return NextResponse.json(booking, { status: 201 });
 }
