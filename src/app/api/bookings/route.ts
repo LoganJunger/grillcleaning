@@ -145,9 +145,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(booking, { status: 201 });
   } catch (err) {
-    console.error("[API] POST /api/bookings error:", err);
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[API] POST /api/bookings error:", message, err);
     return NextResponse.json(
-      { error: "Failed to create booking. Please try again." },
+      { error: `Failed to create booking: ${message}` },
       { status: 500 }
     );
   }
