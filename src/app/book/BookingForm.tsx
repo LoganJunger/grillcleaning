@@ -80,9 +80,37 @@ export default function BookingForm({ services }: { services: Service[] }) {
     e.preventDefault();
     setError("");
 
-    // Client-side ZIP validation (removed HTML pattern to avoid browser error)
-    if (!/^\d{5}(-\d{4})?$/.test(form.customer_zip)) {
+    // All validation in JS — no native browser validation (form has noValidate)
+    if (!form.service_id) {
+      setError("Please select a service.");
+      return;
+    }
+    if (!form.customer_name.trim()) {
+      setError("Please enter your full name.");
+      return;
+    }
+    if (!form.customer_email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.customer_email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (!form.customer_phone.trim()) {
+      setError("Please enter your phone number.");
+      return;
+    }
+    if (!form.customer_address.trim()) {
+      setError("Please enter your street address.");
+      return;
+    }
+    if (!form.customer_zip.trim() || !/^\d{5}(-\d{4})?$/.test(form.customer_zip)) {
       setError("Please enter a valid ZIP code (e.g., 45202 or 45202-1234).");
+      return;
+    }
+    if (!form.booking_date) {
+      setError("Please select a date.");
+      return;
+    }
+    if (!form.booking_time) {
+      setError("Please select a time slot.");
       return;
     }
 
@@ -168,7 +196,7 @@ export default function BookingForm({ services }: { services: Service[] }) {
   const availableSlots = ALL_TIME_SLOTS.filter((slot) => !bookedSlots.includes(slot));
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} noValidate autoComplete="on" className="space-y-8">
       {/* Service Selection */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h2 className="text-xl font-bold text-gray-900 mb-4">1. Choose Your Service</h2>
@@ -209,76 +237,88 @@ export default function BookingForm({ services }: { services: Service[] }) {
         </h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+            <label htmlFor="customer_name" className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
             <input
+              id="customer_name"
               type="text"
               name="customer_name"
+              autoComplete="name"
               value={form.customer_name}
               onChange={handleChange}
-              required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+            <label htmlFor="customer_email" className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
             <input
-              type="email"
+              id="customer_email"
+              type="text"
               name="customer_email"
+              autoComplete="email"
+              inputMode="email"
               value={form.customer_email}
               onChange={handleChange}
-              required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+            <label htmlFor="customer_phone" className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
             <input
-              type="tel"
+              id="customer_phone"
+              type="text"
               name="customer_phone"
+              autoComplete="tel"
+              inputMode="tel"
               value={form.customer_phone}
               onChange={handleChange}
-              required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code *</label>
+            <label htmlFor="customer_zip" className="block text-sm font-medium text-gray-700 mb-1">ZIP Code *</label>
             <input
+              id="customer_zip"
               type="text"
               name="customer_zip"
+              autoComplete="postal-code"
+              inputMode="numeric"
               value={form.customer_zip}
               onChange={handleChange}
-              required
               placeholder="45202"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Street Address *</label>
+            <label htmlFor="customer_address" className="block text-sm font-medium text-gray-700 mb-1">Street Address *</label>
             <input
+              id="customer_address"
               type="text"
               name="customer_address"
+              autoComplete="street-address"
               value={form.customer_address}
               onChange={handleChange}
-              required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+            <label htmlFor="customer_city" className="block text-sm font-medium text-gray-700 mb-1">City</label>
             <input
+              id="customer_city"
               type="text"
               name="customer_city"
+              autoComplete="address-level2"
               value={form.customer_city}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+            <label htmlFor="customer_state" className="block text-sm font-medium text-gray-700 mb-1">State</label>
             <input
+              id="customer_state"
               type="text"
               name="customer_state"
+              autoComplete="address-level1"
               value={form.customer_state}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -292,14 +332,16 @@ export default function BookingForm({ services }: { services: Service[] }) {
         <h2 className="text-xl font-bold text-gray-900 mb-4">3. Pick a Date & Time</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Preferred Date *</label>
+            <label htmlFor="booking_date" className="block text-sm font-medium text-gray-700 mb-1">Preferred Date *</label>
             <input
-              type="date"
+              id="booking_date"
+              type="text"
               name="booking_date"
               value={form.booking_date}
               onChange={handleChange}
               min={minDate}
-              required
+              placeholder="YYYY-MM-DD"
+              onFocus={(e) => { e.target.type = "date"; }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             />
           </div>
@@ -312,7 +354,6 @@ export default function BookingForm({ services }: { services: Service[] }) {
               name="booking_time"
               value={form.booking_time}
               onChange={handleChange}
-              required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             >
               <option value="">Select a time</option>
