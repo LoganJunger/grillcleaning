@@ -1,7 +1,22 @@
 import Database from "better-sqlite3";
 import path from "path";
+import fs from "fs";
 
-const DB_PATH = path.join(process.cwd(), "grillcleaning.db");
+// Use multiple strategies to find a writable database location
+function getDbPath(): string {
+  // First try project root via process.cwd()
+  const cwdPath = path.join(process.cwd(), "grillcleaning.db");
+  try {
+    // Test if we can write to this directory
+    fs.accessSync(path.dirname(cwdPath), fs.constants.W_OK);
+    return cwdPath;
+  } catch {
+    // Fallback to /tmp if cwd is not writable
+    return path.join("/tmp", "grillcleaning.db");
+  }
+}
+
+const DB_PATH = getDbPath();
 
 let db: Database.Database | null = null;
 
