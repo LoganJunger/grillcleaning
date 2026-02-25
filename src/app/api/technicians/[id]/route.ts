@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb, Technician } from "@/lib/db";
+import { dbGet, dbRun, Technician } from "@/lib/db";
 
 export async function PUT(
   request: NextRequest,
@@ -7,12 +7,9 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    const db = getDb();
     const body = await request.json();
 
-    const existing = db.prepare("SELECT * FROM technicians WHERE id = ?").get(id) as
-      | Technician
-      | undefined;
+    const existing = await dbGet<Technician>("SELECT * FROM technicians WHERE id = ?", [id]);
 
     if (!existing) {
       return NextResponse.json({ error: "Technician not found" }, { status: 404 });
@@ -43,9 +40,9 @@ export async function PUT(
     }
 
     values.push(id);
-    db.prepare(`UPDATE technicians SET ${updates.join(", ")} WHERE id = ?`).run(...values);
+    await dbRun(`UPDATE technicians SET ${updates.join(", ")} WHERE id = ?`, values);
 
-    const updated = db.prepare("SELECT * FROM technicians WHERE id = ?").get(id);
+    const updated = await dbGet("SELECT * FROM technicians WHERE id = ?", [id]);
     return NextResponse.json(updated);
   } catch (err) {
     console.error("[API] PUT /api/technicians/[id] error:", err);
@@ -59,21 +56,19 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const db = getDb();
 
-    const existing = db.prepare("SELECT * FROM technicians WHERE id = ?").get(id);
+    const existing = await dbGet("SELECT * FROM technicians WHERE id = ?", [id]);
     if (!existing) {
       return NextResponse.json({ error: "Technician not found" }, { status: 404 });
     }
 
     // Check for assigned bookings
-    const assignedBookings = db
-      .prepare(
-        "SELECT COUNT(*) as count FROM bookings WHERE technician_id = ? AND status IN ('pending', 'confirmed')"
-      )
-      .get(id) as { count: number };
+    const assignedBookings = await dbGet<{ count: number }>(
+      "SELECT COUNT(*) as count FROM bookings WHERE technician_id = ? AND status IN ('pending', 'confirmed')",
+      [id]
+    );
 
-    if (assignedBookings.count > 0) {
+    if (assignedBookings && assignedBookings.count > 0) {
       return NextResponse.json(
         {
           error: "Cannot delete technician with active bookings. Reassign bookings first.",
@@ -82,7 +77,7 @@ export async function DELETE(
       );
     }
 
-    db.prepare("DELETE FROM technicians WHERE id = ?").run(id);
+    await dbRun("DELETE FROM technicians WHERE id = ?", [id]);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("[API] DELETE /api/technicians/[id] error:", err);

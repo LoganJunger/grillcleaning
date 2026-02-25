@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { getDb, Service } from "@/lib/db";
+import { dbAll, Service } from "@/lib/db";
 import BookingForm from "./book/BookingForm";
+
+export const dynamic = "force-dynamic";
 
 const features = [
   {
@@ -63,11 +65,10 @@ const testimonials = [
   },
 ];
 
-export default function HomePage() {
-  const db = getDb();
-  const services = db
-    .prepare("SELECT * FROM services WHERE is_active = 1 ORDER BY price_cents ASC")
-    .all() as Service[];
+export default async function HomePage() {
+  const services = await dbAll<Service>(
+    "SELECT * FROM services WHERE is_active = 1 ORDER BY price_cents ASC"
+  );
 
   return (
     <>

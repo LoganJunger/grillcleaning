@@ -1,18 +1,16 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import { dbAll, dbGet, dbRun } from "@/lib/db";
 
 export async function GET() {
   const checks: Record<string, { ok: boolean; detail?: string }> = {};
 
-  // 1. Database connection
   try {
-    const db = getDb();
     checks.database = { ok: true };
 
-    // 2. Tables exist
-    const tables = db
-      .prepare("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")
-      .all() as { name: string }[];
+    // Tables exist
+    const tables = await dbAll<{ name: string }>(
+      "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
+    );
     const tableNames = tables.map((t) => t.name);
     const required = ["bookings", "services", "technicians", "activity_log", "email_log"];
     const missing = required.filter((t) => !tableNames.includes(t));
@@ -20,17 +18,18 @@ export async function GET() {
       ? { ok: true, detail: tableNames.join(", ") }
       : { ok: false, detail: `Missing: ${missing.join(", ")}` };
 
-    // 3. Services seeded
-    const serviceCount = db.prepare("SELECT COUNT(*) as count FROM services").get() as { count: number };
-    checks.services = serviceCount.count > 0
+    // Services seeded
+    const serviceCount = await dbGet<{ count: number }>("SELECT COUNT(*) as count FROM services");
+    checks.services = serviceCount && serviceCount.count > 0
       ? { ok: true, detail: `${serviceCount.count} services` }
       : { ok: false, detail: "No services found" };
 
-    // 4. Write access
+    // Write access
     try {
-      db.prepare(
-        "INSERT INTO activity_log (action, entity_type, details) VALUES (?, ?, ?)"
-      ).run("health_check", "system", "Health check write test");
+      await dbRun(
+        "INSERT INTO activity_log (action, entity_type, details) VALUES (?, ?, ?)",
+        ["health_check", "system", "Health check write test"]
+      );
       checks.write_access = { ok: true };
     } catch (writeErr) {
       checks.write_access = {
@@ -39,9 +38,9 @@ export async function GET() {
       };
     }
 
-    // 5. Booking count
-    const bookingCount = db.prepare("SELECT COUNT(*) as count FROM bookings").get() as { count: number };
-    checks.bookings = { ok: true, detail: `${bookingCount.count} total bookings` };
+    // Booking count
+    const bookingCount = await dbGet<{ count: number }>("SELECT COUNT(*) as count FROM bookings");
+    checks.bookings = { ok: true, detail: `${bookingCount?.count ?? 0} total bookings` };
 
   } catch (err) {
     checks.database = {

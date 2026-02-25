@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import { dbAll } from "@/lib/db";
 
 const ALL_SLOTS = [
   "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
@@ -15,11 +15,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "date parameter required" }, { status: 400 });
     }
 
-    const db = getDb();
-    const booked = db.prepare(
+    const booked = await dbAll<{ booking_time: string }>(
       `SELECT booking_time FROM bookings
-       WHERE booking_date = ? AND status NOT IN ('cancelled')`
-    ).all(date) as { booking_time: string }[];
+       WHERE booking_date = ? AND status NOT IN ('cancelled')`,
+      [date]
+    );
 
     const bookedTimes = new Set(booked.map((b) => b.booking_time));
     const availableSlots = ALL_SLOTS.filter((slot) => !bookedTimes.has(slot));

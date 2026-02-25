@@ -1,37 +1,23 @@
-import Database from "better-sqlite3";
-import path from "path";
-import fs from "fs";
+import { createClient, type Client, type InArgs } from "@libsql/client";
 
-// Use multiple strategies to find a writable database location
-function getDbPath(): string {
-  // First try project root via process.cwd()
-  const cwdPath = path.join(process.cwd(), "grillcleaning.db");
-  try {
-    // Test if we can write to this directory
-    fs.accessSync(path.dirname(cwdPath), fs.constants.W_OK);
-    return cwdPath;
-  } catch {
-    // Fallback to /tmp if cwd is not writable
-    return path.join("/tmp", "grillcleaning.db");
+let client: Client | null = null;
+let initialized = false;
+
+export function getClient(): Client {
+  if (!client) {
+    client = createClient({
+      url: process.env.TURSO_DATABASE_URL!,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    });
   }
+  return client;
 }
 
-const DB_PATH = getDbPath();
+async function initializeDb(): Promise<void> {
+  if (initialized) return;
+  const db = getClient();
 
-let db: Database.Database | null = null;
-
-export function getDb(): Database.Database {
-  if (!db) {
-    db = new Database(DB_PATH);
-    db.pragma("journal_mode = WAL");
-    db.pragma("foreign_keys = ON");
-    initializeDb(db);
-  }
-  return db;
-}
-
-function initializeDb(db: Database.Database) {
-  db.exec(`
+  await db.executeMultiple(`
     CREATE TABLE IF NOT EXISTS services (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -103,60 +89,66 @@ function initializeDb(db: Database.Database) {
   `);
 
   // Add new columns to existing bookings table if missing
-  try { db.exec(`ALTER TABLE bookings ADD COLUMN payment_token TEXT UNIQUE`); } catch { /* exists */ }
-  try { db.exec(`ALTER TABLE bookings ADD COLUMN payment_status TEXT NOT NULL DEFAULT 'unpaid'`); } catch { /* exists */ }
-  try { db.exec(`ALTER TABLE bookings ADD COLUMN reminder_sent INTEGER NOT NULL DEFAULT 0`); } catch { /* exists */ }
+  const addColumnIfMissing = async (col: string, def: string) => {
+    try {
+      await db.execute(`ALTER TABLE bookings ADD COLUMN ${col} ${def}`);
+    } catch {
+      /* column already exists */
+    }
+  };
+  await addColumnIfMissing("payment_token", "TEXT UNIQUE");
+  await addColumnIfMissing("payment_status", "TEXT NOT NULL DEFAULT 'unpaid'");
+  await addColumnIfMissing("reminder_sent", "INTEGER NOT NULL DEFAULT 0");
 
   // Seed default services if none exist
-  const count = db.prepare("SELECT COUNT(*) as count FROM services").get() as { count: number };
-  if (count.count === 0) {
-    const insert = db.prepare(
-      "INSERT INTO services (id, name, description, price_cents, duration_minutes, category) VALUES (?, ?, ?, ?, ?, ?)"
-    );
+  const countResult = await db.execute("SELECT COUNT(*) as count FROM services");
+  const count = countResult.rows[0].count as number;
 
-    const services = [
-      [
-        "svc_basic",
-        "Basic Grill Cleaning",
-        "Thorough cleaning of grill grates, burners, and exterior. Includes degreasing and sanitizing all cooking surfaces.",
-        14900,
-        60,
-        "standard",
-      ],
-      [
-        "svc_deep",
-        "Deep Clean & Restoration",
-        "Complete disassembly and deep cleaning of all components. Includes grate restoration, burner cleaning, grease trap service, and full exterior detail.",
-        24900,
-        120,
-        "premium",
-      ],
-      [
-        "svc_seasonal",
-        "Seasonal Tune-Up",
-        "Get your grill ready for the season with a full inspection, cleaning, and performance check. Includes ignition testing and gas line inspection.",
-        19900,
-        90,
-        "standard",
-      ],
-      [
-        "svc_commercial",
-        "Commercial Grill Service",
-        "Professional cleaning for restaurant and commercial grills. Includes deep degreasing, component inspection, and health code compliance check.",
-        39900,
-        180,
-        "commercial",
-      ],
-    ];
-
-    const insertMany = db.transaction((rows: (string | number)[][]) => {
-      for (const row of rows) {
-        insert.run(...row);
-      }
-    });
-
-    insertMany(services);
+  if (count === 0) {
+    await db.batch([
+      {
+        sql: "INSERT INTO services (id, name, description, price_cents, duration_minutes, category) VALUES (?, ?, ?, ?, ?, ?)",
+        args: ["svc_basic", "Basic Grill Cleaning", "Thorough cleaning of grill grates, burners, and exterior. Includes degreasing and sanitizing all cooking surfaces.", 14900, 60, "standard"],
+      },
+      {
+        sql: "INSERT INTO services (id, name, description, price_cents, duration_minutes, category) VALUES (?, ?, ?, ?, ?, ?)",
+        args: ["svc_deep", "Deep Clean & Restoration", "Complete disassembly and deep cleaning of all components. Includes grate restoration, burner cleaning, grease trap service, and full exterior detail.", 24900, 120, "premium"],
+      },
+      {
+        sql: "INSERT INTO services (id, name, description, price_cents, duration_minutes, category) VALUES (?, ?, ?, ?, ?, ?)",
+        args: ["svc_seasonal", "Seasonal Tune-Up", "Get your grill ready for the season with a full inspection, cleaning, and performance check. Includes ignition testing and gas line inspection.", 19900, 90, "standard"],
+      },
+      {
+        sql: "INSERT INTO services (id, name, description, price_cents, duration_minutes, category) VALUES (?, ?, ?, ?, ?, ?)",
+        args: ["svc_commercial", "Commercial Grill Service", "Professional cleaning for restaurant and commercial grills. Includes deep degreasing, component inspection, and health code compliance check.", 39900, 180, "commercial"],
+      },
+    ]);
   }
+
+  initialized = true;
+}
+
+// Async helper functions
+export async function dbGet<T = Record<string, unknown>>(sql: string, args: InArgs = []): Promise<T | undefined> {
+  await initializeDb();
+  const result = await getClient().execute({ sql, args });
+  return result.rows[0] as T | undefined;
+}
+
+export async function dbAll<T = Record<string, unknown>>(sql: string, args: InArgs = []): Promise<T[]> {
+  await initializeDb();
+  const result = await getClient().execute({ sql, args });
+  return result.rows as T[];
+}
+
+export async function dbRun(sql: string, args: InArgs = []) {
+  await initializeDb();
+  return getClient().execute({ sql, args });
+}
+
+export async function dbExec(sql: string) {
+  await initializeDb();
+  return getClient().executeMultiple(sql);
 }
 
 // Type definitions

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb, Booking } from "@/lib/db";
+import { dbGet, dbRun, Booking } from "@/lib/db";
 
 export async function GET(
   _request: NextRequest,
@@ -7,17 +7,15 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const db = getDb();
-    const booking = db
-      .prepare(
-        `SELECT b.*, s.name as service_name,
-                t.first_name || ' ' || t.last_name as technician_name
-         FROM bookings b
-         JOIN services s ON b.service_id = s.id
-         LEFT JOIN technicians t ON b.technician_id = t.id
-         WHERE b.id = ?`
-      )
-      .get(id);
+    const booking = await dbGet(
+      `SELECT b.*, s.name as service_name,
+              t.first_name || ' ' || t.last_name as technician_name
+       FROM bookings b
+       JOIN services s ON b.service_id = s.id
+       LEFT JOIN technicians t ON b.technician_id = t.id
+       WHERE b.id = ?`,
+      [id]
+    );
 
     if (!booking) {
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
@@ -36,12 +34,9 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    const db = getDb();
     const body = await request.json();
 
-    const existing = db.prepare("SELECT * FROM bookings WHERE id = ?").get(id) as
-      | Booking
-      | undefined;
+    const existing = await dbGet<Booking>("SELECT * FROM bookings WHERE id = ?", [id]);
 
     if (!existing) {
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
@@ -74,9 +69,9 @@ export async function PUT(
     }
 
     values.push(id);
-    db.prepare(`UPDATE bookings SET ${updates.join(", ")} WHERE id = ?`).run(...values);
+    await dbRun(`UPDATE bookings SET ${updates.join(", ")} WHERE id = ?`, values);
 
-    const updated = db.prepare("SELECT * FROM bookings WHERE id = ?").get(id);
+    const updated = await dbGet("SELECT * FROM bookings WHERE id = ?", [id]);
     return NextResponse.json(updated);
   } catch (err) {
     console.error("[API] PUT /api/bookings/[id] error:", err);
@@ -90,14 +85,13 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const db = getDb();
 
-    const existing = db.prepare("SELECT * FROM bookings WHERE id = ?").get(id);
+    const existing = await dbGet("SELECT * FROM bookings WHERE id = ?", [id]);
     if (!existing) {
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     }
 
-    db.prepare("DELETE FROM bookings WHERE id = ?").run(id);
+    await dbRun("DELETE FROM bookings WHERE id = ?", [id]);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("[API] DELETE /api/bookings/[id] error:", err);

@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb, Technician } from "@/lib/db";
+import { dbAll, dbGet, dbRun, Technician } from "@/lib/db";
 import { v4 as uuidv4 } from "uuid";
 
 export async function GET() {
   try {
-    const db = getDb();
-    const technicians = db
-      .prepare("SELECT * FROM technicians ORDER BY first_name ASC")
-      .all() as Technician[];
+    const technicians = await dbAll<Technician>(
+      "SELECT * FROM technicians ORDER BY first_name ASC"
+    );
 
     return NextResponse.json(technicians);
   } catch (err) {
@@ -18,7 +17,6 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const db = getDb();
     const body = await request.json();
 
     const { first_name, last_name, email, phone, service_area, notes } = body;
@@ -28,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check for duplicate email
-    const existing = db.prepare("SELECT id FROM technicians WHERE email = ?").get(email);
+    const existing = await dbGet("SELECT id FROM technicians WHERE email = ?", [email]);
     if (existing) {
       return NextResponse.json(
         { error: "A technician with this email already exists" },
@@ -38,12 +36,13 @@ export async function POST(request: NextRequest) {
 
     const id = `tech_${uuidv4().split("-")[0]}`;
 
-    db.prepare(
+    await dbRun(
       `INSERT INTO technicians (id, first_name, last_name, email, phone, service_area, notes)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`
-    ).run(id, first_name, last_name, email, phone, service_area || "Cincinnati", notes || null);
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [id, first_name, last_name, email, phone, service_area || "Cincinnati", notes || null]
+    );
 
-    const technician = db.prepare("SELECT * FROM technicians WHERE id = ?").get(id) as Technician;
+    const technician = await dbGet<Technician>("SELECT * FROM technicians WHERE id = ?", [id]);
     return NextResponse.json(technician, { status: 201 });
   } catch (err) {
     console.error("[API] POST /api/technicians error:", err);

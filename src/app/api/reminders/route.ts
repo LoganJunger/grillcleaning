@@ -1,25 +1,24 @@
 import { NextResponse } from "next/server";
-import { getDb, Booking, Service } from "@/lib/db";
+import { dbAll, Booking, Service } from "@/lib/db";
 import { sendBookingReminder } from "@/lib/email";
 import { logActivity } from "@/lib/logger";
 
 export async function POST() {
   try {
-    const db = getDb();
-
     // Find bookings for tomorrow that haven't had reminders sent
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const tomorrowStr = tomorrow.toISOString().split("T")[0];
 
-    const bookings = db.prepare(
+    const bookings = await dbAll<Booking & Service>(
       `SELECT b.*, s.name as service_name, s.description, s.price_cents, s.duration_minutes, s.category
        FROM bookings b
        JOIN services s ON b.service_id = s.id
        WHERE b.booking_date = ?
          AND b.reminder_sent = 0
-         AND b.status IN ('pending', 'confirmed')`
-    ).all(tomorrowStr) as (Booking & Service)[];
+         AND b.status IN ('pending', 'confirmed')`,
+      [tomorrowStr]
+    );
 
     let sent = 0;
     for (const booking of bookings) {
@@ -35,10 +34,10 @@ export async function POST() {
       } as Service;
 
       try {
-        sendBookingReminder(booking, service);
+        await sendBookingReminder(booking, service);
         sent++;
 
-        logActivity(
+        await logActivity(
           "reminder_sent",
           "booking",
           booking.id,

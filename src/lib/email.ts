@@ -1,24 +1,24 @@
-import { getDb, Booking, Service } from "./db";
+import { dbRun, Booking, Service } from "./db";
 
 function formatPrice(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
-function logEmail(
+async function logEmail(
   recipient: string,
   subject: string,
   body: string,
   emailType: string,
   bookingId?: string | null
 ) {
-  const db = getDb();
-  db.prepare(
+  await dbRun(
     `INSERT INTO email_log (recipient, subject, body, email_type, booking_id, status)
-     VALUES (?, ?, ?, ?, ?, ?)`
-  ).run(recipient, subject, body, emailType, bookingId || null, "sent");
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [recipient, subject, body, emailType, bookingId || null, "sent"]
+  );
 }
 
-export function sendBookingConfirmation(booking: Booking, service: Service) {
+export async function sendBookingConfirmation(booking: Booking, service: Service) {
   const paymentUrl = booking.payment_token
     ? `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/pay/${booking.payment_token}`
     : null;
@@ -46,10 +46,10 @@ If you need to reschedule or cancel, please contact us:
 
 Thank you for choosing Grill Revival Co.!`;
 
-  logEmail(booking.customer_email, subject, body, "booking_confirmation", booking.id);
+  await logEmail(booking.customer_email, subject, body, "booking_confirmation", booking.id);
 }
 
-export function sendBookingReminder(booking: Booking, service: Service) {
+export async function sendBookingReminder(booking: Booking, service: Service) {
   const subject = `Reminder: ${service.name} Tomorrow at ${booking.booking_time}`;
   const body = `Hi ${booking.customer_name},
 
@@ -70,13 +70,12 @@ If you need to reschedule, please contact us as soon as possible:
 See you tomorrow!
 Grill Revival Co.`;
 
-  logEmail(booking.customer_email, subject, body, "booking_reminder", booking.id);
+  await logEmail(booking.customer_email, subject, body, "booking_reminder", booking.id);
 
-  const db = getDb();
-  db.prepare("UPDATE bookings SET reminder_sent = 1 WHERE id = ?").run(booking.id);
+  await dbRun("UPDATE bookings SET reminder_sent = 1 WHERE id = ?", [booking.id]);
 }
 
-export function sendPaymentConfirmation(booking: Booking, service: Service) {
+export async function sendPaymentConfirmation(booking: Booking, service: Service) {
   const subject = `Payment Received - ${service.name} on ${booking.booking_date}`;
   const body = `Hi ${booking.customer_name},
 
@@ -94,5 +93,5 @@ You're all set! We'll see you on ${booking.booking_date}.
 Thank you,
 Grill Revival Co.`;
 
-  logEmail(booking.customer_email, subject, body, "payment_confirmation", booking.id);
+  await logEmail(booking.customer_email, subject, body, "payment_confirmation", booking.id);
 }

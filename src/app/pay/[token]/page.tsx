@@ -1,4 +1,4 @@
-import { getDb, Booking, Service } from "@/lib/db";
+import { dbGet, Booking } from "@/lib/db";
 import { notFound } from "next/navigation";
 import PaymentClient from "./PaymentClient";
 
@@ -12,14 +12,14 @@ export default async function PaymentPage({
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
-  const db = getDb();
 
-  const booking = db.prepare(
+  const booking = await dbGet<Booking & { service_name: string; duration_minutes: number }>(
     `SELECT b.*, s.name as service_name, s.duration_minutes
      FROM bookings b
      JOIN services s ON b.service_id = s.id
-     WHERE b.payment_token = ?`
-  ).get(token) as (Booking & { service_name: string; duration_minutes: number }) | undefined;
+     WHERE b.payment_token = ?`,
+    [token]
+  );
 
   if (!booking) {
     notFound();

@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb, Booking, Service } from "@/lib/db";
+import { dbAll, dbGet, dbRun, Booking, Service } from "@/lib/db";
 import { logActivity } from "@/lib/logger";
 import { sendBookingConfirmation } from "@/lib/email";
 import { v4 as uuidv4 } from "uuid";
 
 export async function GET(request: NextRequest) {
   try {
-    const db = getDb();
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
 
@@ -26,7 +25,7 @@ export async function GET(request: NextRequest) {
 
     query += " ORDER BY b.booking_date ASC, b.booking_time ASC";
 
-    const bookings = db.prepare(query).all(...params);
+    const bookings = await dbAll(query, params);
     return NextResponse.json(bookings);
   } catch (err) {
     console.error("[API] GET /api/bookings error:", err);
@@ -39,7 +38,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const db = getDb();
     const body = await request.json();
     const ip = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
 
@@ -72,20 +70,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Get service info
-    const service = db.prepare("SELECT * FROM services WHERE id = ?").get(service_id) as
-      | Service
-      | undefined;
+    const service = await dbGet<Service>("SELECT * FROM services WHERE id = ?", [service_id]);
 
     if (!service) {
       return NextResponse.json({ error: "Invalid service selected" }, { status: 400 });
     }
 
     // Check for time slot conflicts
-    const existing = db.prepare(
+    const existing = await dbGet<{ id: string }>(
       `SELECT id FROM bookings
        WHERE booking_date = ? AND booking_time = ?
-       AND status NOT IN ('cancelled')`
-    ).get(booking_date, booking_time) as { id: string } | undefined;
+       AND status NOT IN ('cancelled')`,
+      [booking_date, booking_time]
+    );
 
     if (existing) {
       return NextResponse.json(
@@ -97,35 +94,34 @@ export async function POST(request: NextRequest) {
     const id = `bk_${uuidv4().split("-")[0]}`;
     const paymentToken = uuidv4();
 
-    const stmt = db.prepare(`
-      INSERT INTO bookings (id, customer_name, customer_email, customer_phone,
+    await dbRun(
+      `INSERT INTO bookings (id, customer_name, customer_email, customer_phone,
         customer_address, customer_city, customer_state, customer_zip,
         service_id, booking_date, booking_time, notes, total_cents, payment_token)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    stmt.run(
-      id,
-      customer_name,
-      customer_email,
-      customer_phone,
-      customer_address,
-      customer_city || "Cincinnati",
-      customer_state || "OH",
-      customer_zip,
-      service_id,
-      booking_date,
-      booking_time,
-      notes || null,
-      service.price_cents,
-      paymentToken
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        id,
+        customer_name,
+        customer_email,
+        customer_phone,
+        customer_address,
+        customer_city || "Cincinnati",
+        customer_state || "OH",
+        customer_zip,
+        service_id,
+        booking_date,
+        booking_time,
+        notes || null,
+        service.price_cents,
+        paymentToken,
+      ]
     );
 
-    const booking = db.prepare("SELECT * FROM bookings WHERE id = ?").get(id) as Booking;
+    const booking = await dbGet<Booking>("SELECT * FROM bookings WHERE id = ?", [id]);
 
     // Log the activity (non-critical, don't let it fail the booking)
     try {
-      logActivity(
+      await logActivity(
         "booking_created",
         "booking",
         id,
@@ -138,7 +134,7 @@ export async function POST(request: NextRequest) {
 
     // Send confirmation email (non-critical, don't let it fail the booking)
     try {
-      sendBookingConfirmation(booking, service);
+      await sendBookingConfirmation(booking!, service);
     } catch (emailErr) {
       console.error("[API] Email send failed:", emailErr);
     }

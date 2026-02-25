@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb, Booking, Service } from "@/lib/db";
+import { dbGet, dbRun, Booking, Service } from "@/lib/db";
 import { logActivity } from "@/lib/logger";
 import { sendPaymentConfirmation } from "@/lib/email";
 
@@ -9,11 +9,11 @@ export async function POST(
 ) {
   try {
     const { token } = await params;
-    const db = getDb();
 
-    const booking = db.prepare("SELECT * FROM bookings WHERE payment_token = ?").get(token) as
-      | Booking
-      | undefined;
+    const booking = await dbGet<Booking>(
+      "SELECT * FROM bookings WHERE payment_token = ?",
+      [token]
+    );
 
     if (!booking) {
       return NextResponse.json({ error: "Invalid payment link" }, { status: 404 });
@@ -23,12 +23,12 @@ export async function POST(
       return NextResponse.json({ error: "Payment already processed" }, { status: 400 });
     }
 
-    db.prepare("UPDATE bookings SET payment_status = 'paid' WHERE id = ?").run(booking.id);
+    await dbRun("UPDATE bookings SET payment_status = 'paid' WHERE id = ?", [booking.id]);
 
-    const service = db.prepare("SELECT * FROM services WHERE id = ?").get(booking.service_id) as Service;
+    const service = await dbGet<Service>("SELECT * FROM services WHERE id = ?", [booking.service_id]);
 
     try {
-      logActivity(
+      await logActivity(
         "payment_received",
         "booking",
         booking.id,
@@ -39,7 +39,7 @@ export async function POST(
     }
 
     try {
-      sendPaymentConfirmation({ ...booking, payment_status: "paid" }, service);
+      await sendPaymentConfirmation({ ...booking, payment_status: "paid" }, service!);
     } catch (emailErr) {
       console.error("[API] Payment email failed:", emailErr);
     }

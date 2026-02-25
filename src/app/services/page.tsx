@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getDb, Service } from "@/lib/db";
+import { dbAll, Service } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Services & Pricing",
@@ -83,11 +85,10 @@ const faqJsonLd = {
   ],
 };
 
-export default function ServicesPage() {
-  const db = getDb();
-  const services = db
-    .prepare("SELECT * FROM services WHERE is_active = 1 ORDER BY price_cents ASC")
-    .all() as Service[];
+export default async function ServicesPage() {
+  const services = await dbAll<Service>(
+    "SELECT * FROM services WHERE is_active = 1 ORDER BY price_cents ASC"
+  );
 
   return (
     <>
