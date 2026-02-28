@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       `https://nominatim.openstreetmap.org/search?${params}`,
       {
         headers: {
-          "User-Agent": "SevenHillsGrillCo/1.0 (info@sevenhillsgrillco.com)",
+          "User-Agent": "SevenHillsAndGrill/1.0 (info@sevenhillsandgrill.com)",
         },
         next: { revalidate: 300 },
       }

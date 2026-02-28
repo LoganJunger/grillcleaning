@@ -7,9 +7,9 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Services & Pricing",
   description:
-    "Seven Hills Grill Co. offers professional grill cleaning services starting at $149. Basic cleaning, deep clean & restoration, seasonal tune-ups, and commercial grill service in Cincinnati, OH.",
+    "Seven Hills and Grill offers professional grill cleaning services starting at $149. Basic cleaning, deep clean & restoration, seasonal tune-ups, and commercial grill service in Cincinnati, OH.",
   openGraph: {
-    title: "Grill Cleaning Services & Pricing | Seven Hills Grill Co.",
+    title: "Grill Cleaning Services & Pricing | Seven Hills and Grill",
     description:
       "Professional grill cleaning starting at $149. View our services and book online today.",
   },

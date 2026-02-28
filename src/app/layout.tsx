@@ -3,8 +3,8 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const SITE_NAME = "Seven Hills Grill Co.";
-const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://sevenhillsgrillco.com";
+const SITE_NAME = "Seven Hills and Grill";
+const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://sevenhillsandgrill.com";
 const SITE_DESCRIPTION =
   "Professional grill cleaning services in Cincinnati, OH and the tri-state area. Deep cleaning, restoration, and maintenance for all grill types. Book online today.";
 
@@ -82,7 +82,7 @@ export default function RootLayout({
         description: SITE_DESCRIPTION,
         url: SITE_URL,
         telephone: "+15135554745",
-        email: "info@sevenhillsgrillco.com",
+        email: "info@sevenhillsandgrill.com",
         address: {
           "@type": "PostalAddress",
           addressLocality: "Cincinnati",
