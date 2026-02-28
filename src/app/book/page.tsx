@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description:
     "Schedule your professional grill cleaning in Cincinnati and the tri-state area. Choose your service, pick a date, and book online in minutes.",
   openGraph: {
-    title: "Book a Grill Cleaning | Grill Revival Co.",
+    title: "Book a Grill Cleaning | Seven Hills Grill Co.",
     description:
       "Schedule your professional grill cleaning online. Fast, easy booking with flexible scheduling.",
   },

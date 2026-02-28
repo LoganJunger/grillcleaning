@@ -26,7 +26,7 @@ export async function sendBookingConfirmation(booking: Booking, service: Service
   const subject = `Booking Confirmed - ${service.name} on ${booking.booking_date}`;
   const body = `Hi ${booking.customer_name},
 
-Thank you for booking with Grill Revival Co.! Your appointment has been confirmed.
+Thank you for booking with Seven Hills Grill Co.! Your appointment has been confirmed.
 
 Booking Details:
 - Booking ID: ${booking.id}
@@ -41,10 +41,10 @@ ${paymentUrl ? `Pay online: ${paymentUrl}\n` : ""}Payment is collected at the ti
 A technician will be assigned and you'll receive a reminder before your appointment.
 
 If you need to reschedule or cancel, please contact us:
-- Email: info@grillrevivalco.com
+- Email: info@sevenhillsgrillco.com
 - Phone: (513) 555-GRILL
 
-Thank you for choosing Grill Revival Co.!`;
+Thank you for choosing Seven Hills Grill Co.!`;
 
   await logEmail(booking.customer_email, subject, body, "booking_confirmation", booking.id);
 }
@@ -64,11 +64,11 @@ Appointment Details:
 Please ensure your grill is accessible and the area around it is clear.
 
 If you need to reschedule, please contact us as soon as possible:
-- Email: info@grillrevivalco.com
+- Email: info@sevenhillsgrillco.com
 - Phone: (513) 555-GRILL
 
 See you tomorrow!
-Grill Revival Co.`;
+Seven Hills Grill Co.`;
 
   await logEmail(booking.customer_email, subject, body, "booking_reminder", booking.id);
 
@@ -91,7 +91,7 @@ Booking Details:
 You're all set! We'll see you on ${booking.booking_date}.
 
 Thank you,
-Grill Revival Co.`;
+Seven Hills Grill Co.`;
 
   await logEmail(booking.customer_email, subject, body, "payment_confirmation", booking.id);
 }
