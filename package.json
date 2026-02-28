@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@libsql/client": "^0.17.0",
+    "@next/third-parties": "^16.1.6",
     "next": "16.1.6",
     "react": "19.2.3",
+    "react-compare-slider": "^3.1.0",
     "react-dom": "19.2.3",
     "uuid": "^13.0.0"
   },

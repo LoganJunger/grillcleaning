@@ -5,14 +5,25 @@ import FaqAccordion from "./FaqAccordion";
 
 export const dynamic = "force-dynamic";
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL || "https://sevenhillsandgrill.com";
+const OG_IMAGE = `${SITE_URL}/api/og?title=${encodeURIComponent("Services & Pricing")}&subtitle=${encodeURIComponent("Basic $149 · Seasonal $199 · Deep Clean $249 · Commercial $399")}`;
+
 export const metadata: Metadata = {
-  title: "Services & Pricing",
+  title:
+    "Grill Cleaning Services & Pricing | Cincinnati OH | Seven Hills and Grill",
   description:
-    "Seven Hills and Grill offers professional grill cleaning services starting at $149. Basic cleaning, deep clean & restoration, seasonal tune-ups, and commercial grill service in Cincinnati, OH.",
+    "View our grill cleaning pricing — Basic ($149), Seasonal Tune-Up ($199), Deep Clean ($249), Commercial ($399). No hidden fees. Every service includes a satisfaction guarantee.",
   openGraph: {
     title: "Grill Cleaning Services & Pricing | Seven Hills and Grill",
     description:
       "Professional grill cleaning starting at $149. View our services and book online today.",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Grill Cleaning Services & Pricing | Cincinnati OH",
+    images: [OG_IMAGE],
   },
 };
 
@@ -51,10 +62,27 @@ const comparisonFeatures = [
   { name: "Health Code Compliance", basic: false, deep: false, seasonal: false, commercial: true },
 ];
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "Services & Pricing", item: `${SITE_URL}/services` },
+  ],
+};
+
 const faqJsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
   mainEntity: [
+    {
+      "@type": "Question",
+      name: "What does grill cleaning cost in Cincinnati?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "In Cincinnati, professional grill cleaning typically ranges from $149 for a basic cleaning to $399 for commercial services. Seven Hills and Grill offers flat-rate pricing with no hidden fees.",
+      },
+    },
     {
       "@type": "Question",
       name: "How long does a grill cleaning take?",
@@ -100,6 +128,10 @@ const faqJsonLd = {
 
 const faqs = [
   {
+    q: "What does grill cleaning cost in Cincinnati?",
+    a: "In Cincinnati, professional grill cleaning typically ranges from $149 for a basic cleaning to $399 for commercial services. Seven Hills and Grill offers flat-rate pricing with no hidden fees.",
+  },
+  {
     q: "How long does a cleaning take?",
     a: "A basic cleaning takes about 1 hour, while a deep clean and restoration can take up to 2 hours depending on the grill\u2019s condition.",
   },
@@ -134,20 +166,25 @@ export default async function ServicesPage() {
     <>
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      {/* Page Header */}
+
       <section className="bg-gray-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Services & Pricing</h1>
+          <h1 className="font-bricolage text-4xl md:text-5xl font-bold mb-4">
+            Services & Pricing
+          </h1>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Transparent pricing with no hidden fees. Every service includes a satisfaction
-            guarantee.
+            Transparent pricing with no hidden fees. Every service includes a
+            satisfaction guarantee.
           </p>
         </div>
       </section>
 
-      {/* Services Grid */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8">
@@ -175,7 +212,9 @@ export default async function ServicesPage() {
                         >
                           {categoryLabels[service.category] || service.category}
                         </span>
-                        <h3 className="text-2xl font-bold text-gray-900">{service.name}</h3>
+                        <h3 className="font-bricolage text-2xl font-bold text-gray-900">
+                          {service.name}
+                        </h3>
                       </div>
                       <div className="text-right">
                         <p className="text-3xl font-bold text-orange-500">
@@ -183,12 +222,13 @@ export default async function ServicesPage() {
                         </p>
                       </div>
                     </div>
-                    <p className="text-gray-600 mb-6 leading-relaxed">{service.description}</p>
+                    <p className="text-gray-600 mb-6 leading-relaxed">
+                      {service.description}
+                    </p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-sm text-gray-500">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <span>Approx. {formatDuration(service.duration_minutes)}</span>
                       </div>
@@ -199,6 +239,9 @@ export default async function ServicesPage() {
                         Book Now
                       </Link>
                     </div>
+                    <p className="text-xs text-gray-400 text-right mt-2">
+                      Next available: This week
+                    </p>
                   </div>
                 </div>
               );
@@ -207,22 +250,23 @@ export default async function ServicesPage() {
         </div>
       </section>
 
-      {/* Comparison Table */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Compare Services</h2>
+          <h2 className="font-bricolage text-3xl font-bold text-gray-900 text-center mb-12">
+            Compare Services
+          </h2>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="border-b-2 border-gray-200">
                   <th className="text-left py-3 px-4 text-gray-700 font-semibold">Feature</th>
-                  <th className="text-center py-3 px-4 text-gray-700 font-semibold">Basic<br/><span className="text-orange-500 text-sm font-bold">$149</span></th>
+                  <th className="text-center py-3 px-4 text-gray-700 font-semibold">Basic<br /><span className="text-orange-500 text-sm font-bold">$149</span></th>
                   <th className="text-center py-3 px-4 text-gray-700 font-semibold relative">
-                    Seasonal<br/><span className="text-orange-500 text-sm font-bold">$199</span>
+                    Seasonal<br /><span className="text-orange-500 text-sm font-bold">$199</span>
                     <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">Popular</span>
                   </th>
-                  <th className="text-center py-3 px-4 text-gray-700 font-semibold">Deep Clean<br/><span className="text-orange-500 text-sm font-bold">$249</span></th>
-                  <th className="text-center py-3 px-4 text-gray-700 font-semibold">Commercial<br/><span className="text-orange-500 text-sm font-bold">$399</span></th>
+                  <th className="text-center py-3 px-4 text-gray-700 font-semibold">Deep Clean<br /><span className="text-orange-500 text-sm font-bold">$249</span></th>
+                  <th className="text-center py-3 px-4 text-gray-700 font-semibold">Commercial<br /><span className="text-orange-500 text-sm font-bold">$399</span></th>
                 </tr>
               </thead>
               <tbody>
@@ -248,10 +292,9 @@ export default async function ServicesPage() {
         </div>
       </section>
 
-      {/* What's Included */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+          <h2 className="font-bricolage text-3xl font-bold text-gray-900 text-center mb-12">
             Every Cleaning Includes
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -275,26 +318,27 @@ export default async function ServicesPage() {
           </div>
           <div className="text-center mt-8">
             <p className="text-sm text-gray-500">
-              Free rescheduling up to 24 hours before your appointment. We bring all equipment &mdash; you don&apos;t need to do anything to prepare.
+              Free rescheduling up to 24 hours before your appointment. We bring
+              all equipment &mdash; you don&apos;t need to do anything to prepare.
             </p>
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white" data-speakable="true">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
-            Frequently Asked Questions
+          <h2 className="font-bricolage text-3xl font-bold text-gray-900 text-center mb-12">
+            Grill Cleaning FAQs — Common Questions from Cincinnati Homeowners
           </h2>
           <FaqAccordion faqs={faqs} />
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-16 bg-orange-500 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Get Your Grill Sparkling?</h2>
+          <h2 className="font-bricolage text-3xl font-bold mb-4">
+            Ready to Get Your Grill Sparkling?
+          </h2>
           <p className="text-orange-100 mb-8 text-lg">
             Book your cleaning online and we&apos;ll handle the rest.
           </p>

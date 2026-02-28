@@ -155,10 +155,11 @@ export default function BookingForm({ services }: { services: Service[] }) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Thank You, {form.customer_name}!</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking Request Received!</h2>
         <p className="text-gray-600 mb-6">
-          Your grill cleaning has been scheduled. A confirmation email has been sent to{" "}
-          <strong>{form.customer_email}</strong>.
+          Thanks {form.customer_name.split(" ")[0]}! We&apos;ll call or text you within 2 hours to confirm your{" "}
+          <strong>{selectedService?.name}</strong> appointment. Check your email at{" "}
+          <strong>{form.customer_email}</strong> for a summary.
         </p>
         <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left space-y-2">
           <p className="text-sm text-gray-500">Booking ID: <span className="font-mono text-gray-900">{bookingId}</span></p>
@@ -172,11 +173,14 @@ export default function BookingForm({ services }: { services: Service[] }) {
             Pay Online Now
           </a>
         )}
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 mb-6">
           {paymentLink
             ? "Pay online now or at the time of service. A technician will be assigned and you'll receive a reminder before your appointment."
             : "A technician will be assigned and you'll receive a reminder before your appointment."}
         </p>
+        <a href="/" className="inline-block text-orange-500 font-semibold hover:text-orange-600 transition-colors">
+          &larr; Return to Home
+        </a>
       </div>
     );
   }

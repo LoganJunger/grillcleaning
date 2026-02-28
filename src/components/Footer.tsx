@@ -14,23 +14,24 @@ export default function Footer() {
                     d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
                 </svg>
               </div>
-              <span className="text-lg font-bold text-white">Seven Hills and Grill</span>
+              <span className="text-lg font-bold font-bricolage text-white">Seven Hills and Grill</span>
             </div>
             <p className="text-sm text-gray-400 mb-4">
               Professional grill cleaning services in Cincinnati, OH and surrounding areas. We
               bring your grill back to life.
             </p>
             <p className="text-xs text-gray-500">Licensed & Insured</p>
-            {/* Social links */}
+            {/* Social links — placeholder URLs, add rel="noopener noreferrer" */}
             <div className="flex gap-3 mt-4">
-              <a href="#" aria-label="Facebook" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+              <a href="https://www.facebook.com/sevenhillsandgrill" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
               </a>
-              <a href="#" aria-label="Instagram" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+              <a href="https://www.instagram.com/sevenhillsandgrill" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
               </a>
-              <a href="#" aria-label="Nextdoor" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2a7.2 7.2 0 01-6-3.22c.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08a7.2 7.2 0 01-6 3.22z"/></svg>
+              <a href="https://nextdoor.com/pages/seven-hills-and-grill" target="_blank" rel="noopener noreferrer" aria-label="Nextdoor" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                {/* Nextdoor house icon */}
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h5v-6h4v6h5v-8h3L12 3z"/></svg>
               </a>
             </div>
           </div>
@@ -42,6 +43,7 @@ export default function Footer() {
               <li><Link href="/" className="hover:text-orange-400 transition-colors">Home</Link></li>
               <li><Link href="/services" className="hover:text-orange-400 transition-colors">Services & Pricing</Link></li>
               <li><Link href="/book" className="hover:text-orange-400 transition-colors">Book a Cleaning</Link></li>
+              <li><Link href="/blog" className="hover:text-orange-400 transition-colors">Blog</Link></li>
               <li><Link href="/about" className="hover:text-orange-400 transition-colors">About Us</Link></li>
               <li><Link href="/areas" className="hover:text-orange-400 transition-colors">Service Areas</Link></li>
             </ul>

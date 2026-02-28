@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
 
+const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://sevenhillsandgrill.com";
+const OG_IMAGE = `${SITE_URL}/api/og?title=${encodeURIComponent("Terms of Service")}&subtitle=${encodeURIComponent("Seven Hills and Grill")}`;
+
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: "Seven Hills and Grill terms of service. Read about our booking, cancellation, and service policies.",
+  openGraph: {
+    title: "Terms of Service | Seven Hills and Grill",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630 }],
+  },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 export default function TermsPage() {

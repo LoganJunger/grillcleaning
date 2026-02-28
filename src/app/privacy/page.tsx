@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
 
+const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://sevenhillsandgrill.com";
+const OG_IMAGE = `${SITE_URL}/api/og?title=${encodeURIComponent("Privacy Policy")}&subtitle=${encodeURIComponent("Seven Hills and Grill")}`;
+
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "Seven Hills and Grill privacy policy. Learn how we collect, use, and protect your personal information.",
+  openGraph: {
+    title: "Privacy Policy | Seven Hills and Grill",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630 }],
+  },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 export default function PrivacyPage() {
