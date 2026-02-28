@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { dbAll, Service } from "@/lib/db";
+import FaqAccordion from "./FaqAccordion";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +38,18 @@ const categoryColors: Record<string, string> = {
   premium: "bg-orange-50 text-orange-700",
   commercial: "bg-blue-50 text-blue-700",
 };
+
+const comparisonFeatures = [
+  { name: "Grate Cleaning", basic: true, deep: true, seasonal: true, commercial: true },
+  { name: "Burner Cleaning", basic: true, deep: true, seasonal: true, commercial: true },
+  { name: "Exterior Polish", basic: true, deep: true, seasonal: true, commercial: true },
+  { name: "Grease Trap Service", basic: false, deep: true, seasonal: true, commercial: true },
+  { name: "Full Disassembly", basic: false, deep: true, seasonal: false, commercial: true },
+  { name: "Ignition Test", basic: false, deep: false, seasonal: true, commercial: true },
+  { name: "Gas Line Inspection", basic: false, deep: false, seasonal: true, commercial: true },
+  { name: "Before & After Photos", basic: true, deep: true, seasonal: true, commercial: true },
+  { name: "Health Code Compliance", basic: false, deep: false, seasonal: false, commercial: true },
+];
 
 const faqJsonLd = {
   "@context": "https://schema.org",
@@ -85,6 +98,33 @@ const faqJsonLd = {
   ],
 };
 
+const faqs = [
+  {
+    q: "How long does a cleaning take?",
+    a: "A basic cleaning takes about 1 hour, while a deep clean and restoration can take up to 2 hours depending on the grill\u2019s condition.",
+  },
+  {
+    q: "Do I need to be home during the cleaning?",
+    a: "We prefer you to be home for the initial walkthrough, but you don\u2019t need to supervise. We\u2019ll let you know when we\u2019re finished.",
+  },
+  {
+    q: "What types of grills do you clean?",
+    a: "We clean all types including gas grills, charcoal grills, pellet smokers (Traeger, Pit Boss), kamado grills (Big Green Egg), and commercial units.",
+  },
+  {
+    q: "Are your cleaning products safe?",
+    a: "Yes! We use professional-grade, food-safe, and eco-friendly products. Your grill will be safe to cook on immediately after cleaning.",
+  },
+  {
+    q: "How often should I have my grill professionally cleaned?",
+    a: "We recommend at least once a year, ideally at the start of grilling season. Heavy users should consider twice a year.",
+  },
+  {
+    q: "What is your cancellation policy?",
+    a: "Free rescheduling up to 24 hours before your appointment. We bring all equipment \u2014 you don\u2019t need to do anything to prepare.",
+  },
+];
+
 export default async function ServicesPage() {
   const services = await dbAll<Service>(
     "SELECT * FROM services WHERE is_active = 1 ORDER BY price_cents ASC"
@@ -111,63 +151,105 @@ export default async function ServicesPage() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8">
-            {services.map((service) => (
-              <div
-                key={service.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
-              >
-                <div className="p-8">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <span
-                        className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${
-                          categoryColors[service.category] || "bg-gray-100 text-gray-700"
-                        }`}
+            {services.map((service) => {
+              const isPopular = service.id === "svc_seasonal";
+              return (
+                <div
+                  key={service.id}
+                  className={`relative bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition-shadow ${
+                    isPopular ? "border-orange-500 ring-2 ring-orange-500" : "border-gray-200"
+                  }`}
+                >
+                  {isPopular && (
+                    <div className="bg-orange-500 text-white text-center text-sm font-bold py-1.5">
+                      Most Popular
+                    </div>
+                  )}
+                  <div className="p-8">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <span
+                          className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${
+                            categoryColors[service.category] || "bg-gray-100 text-gray-700"
+                          }`}
+                        >
+                          {categoryLabels[service.category] || service.category}
+                        </span>
+                        <h3 className="text-2xl font-bold text-gray-900">{service.name}</h3>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-3xl font-bold text-orange-500">
+                          {formatPrice(service.price_cents)}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 mb-6 leading-relaxed">{service.description}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Approx. {formatDuration(service.duration_minutes)}</span>
+                      </div>
+                      <Link
+                        href={`/book?service=${service.id}`}
+                        className="bg-orange-500 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
                       >
-                        {categoryLabels[service.category] || service.category}
-                      </span>
-                      <h3 className="text-2xl font-bold text-gray-900">{service.name}</h3>
+                        Book Now
+                      </Link>
                     </div>
-                    <div className="text-right">
-                      <p className="text-3xl font-bold text-orange-500">
-                        {formatPrice(service.price_cents)}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 mb-6 leading-relaxed">{service.description}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      <span>Approx. {formatDuration(service.duration_minutes)}</span>
-                    </div>
-                    <Link
-                      href={`/book?service=${service.id}`}
-                      className="bg-orange-500 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
-                    >
-                      Book Now
-                    </Link>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison Table */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Compare Services</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="border-b-2 border-gray-200">
+                  <th className="text-left py-3 px-4 text-gray-700 font-semibold">Feature</th>
+                  <th className="text-center py-3 px-4 text-gray-700 font-semibold">Basic<br/><span className="text-orange-500 text-sm font-bold">$149</span></th>
+                  <th className="text-center py-3 px-4 text-gray-700 font-semibold relative">
+                    Seasonal<br/><span className="text-orange-500 text-sm font-bold">$199</span>
+                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">Popular</span>
+                  </th>
+                  <th className="text-center py-3 px-4 text-gray-700 font-semibold">Deep Clean<br/><span className="text-orange-500 text-sm font-bold">$249</span></th>
+                  <th className="text-center py-3 px-4 text-gray-700 font-semibold">Commercial<br/><span className="text-orange-500 text-sm font-bold">$399</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparisonFeatures.map((feature, i) => (
+                  <tr key={feature.name} className={i % 2 === 0 ? "bg-gray-50" : ""}>
+                    <td className="py-3 px-4 text-gray-700 text-sm">{feature.name}</td>
+                    {[feature.basic, feature.seasonal, feature.deep, feature.commercial].map((included, j) => (
+                      <td key={j} className="text-center py-3 px-4">
+                        {included ? (
+                          <svg className="w-5 h-5 text-green-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : (
+                          <span className="text-gray-300">&mdash;</span>
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
 
       {/* What's Included */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
             Every Cleaning Includes
@@ -184,61 +266,28 @@ export default async function ServicesPage() {
               "100% satisfaction guarantee",
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-3 p-4">
-                <svg
-                  className="w-5 h-5 text-green-500 mt-0.5 shrink-0"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
+                <svg className="w-5 h-5 text-green-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <span className="text-gray-700">{item}</span>
               </div>
             ))}
           </div>
+          <div className="text-center mt-8">
+            <p className="text-sm text-gray-500">
+              Free rescheduling up to 24 hours before your appointment. We bring all equipment &mdash; you don&apos;t need to do anything to prepare.
+            </p>
+          </div>
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
             Frequently Asked Questions
           </h2>
-          <div className="space-y-6">
-            {[
-              {
-                q: "How long does a cleaning take?",
-                a: "A basic cleaning takes about 1 hour, while a deep clean and restoration can take up to 2 hours depending on the grill's condition.",
-              },
-              {
-                q: "Do I need to be home during the cleaning?",
-                a: "We prefer you to be home for the initial walkthrough, but you don't need to supervise. We'll let you know when we're finished.",
-              },
-              {
-                q: "What types of grills do you clean?",
-                a: "We clean all types including gas grills, charcoal grills, pellet smokers (Traeger, Pit Boss), kamado grills (Big Green Egg), and commercial units.",
-              },
-              {
-                q: "Are your cleaning products safe?",
-                a: "Yes! We use professional-grade, food-safe, and eco-friendly products. Your grill will be safe to cook on immediately after cleaning.",
-              },
-              {
-                q: "How often should I have my grill professionally cleaned?",
-                a: "We recommend at least once a year, ideally at the start of grilling season. Heavy users should consider twice a year.",
-              },
-            ].map((faq, i) => (
-              <div key={i} className="bg-white rounded-lg p-6 shadow-sm">
-                <h3 className="font-semibold text-gray-900 mb-2">{faq.q}</h3>
-                <p className="text-gray-600">{faq.a}</p>
-              </div>
-            ))}
-          </div>
+          <FaqAccordion faqs={faqs} />
         </div>
       </section>
 
