@@ -11,7 +11,7 @@ const features = [
     label: "// Our Promise",
     title: "Trained & Insured",
     description:
-      "We handle every grill type with care — Weber, Traeger, Big Green Egg, Napoleon, and 20+ more brands — using professional-grade tools and eco-friendly solutions.",
+      "We handle every grill type with care - Weber, Traeger, Big Green Egg, Napoleon, and 20+ more brands - using professional-grade tools and eco-friendly solutions.",
   },
   {
     label: "// What to Expect",
@@ -39,7 +39,7 @@ const steps = [
     icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2",
     title: "Book Online",
     description:
-      "Choose your service and pick a date and time that works for you. No credit card required — you\u2019ll get a confirmation email right away.",
+      "Choose your service and pick a date and time that works for you. No credit card required - you\u2019ll get a confirmation email right away.",
   },
   {
     number: "2",
@@ -113,7 +113,7 @@ export default async function HomePage() {
               data-speakable="true"
             >
               A grease-caked grill is a fire hazard and a health risk. We
-              restore your grill to like-new condition — at your home, on your
+              restore your grill to like-new condition - at your home, on your
               schedule. We clean Weber, Traeger, Big Green Egg, Napoleon, and
               all grill brands.
             </p>
@@ -187,7 +187,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Why Choose Us — De-templated asymmetric layout */}
+      {/* Why Choose Us - De-templated asymmetric layout */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -195,7 +195,7 @@ export default async function HomePage() {
               Why Choose Seven Hills and Grill
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              We&apos;re a local Cincinnati grill cleaning service — dedicated,
+              We&apos;re a local Cincinnati grill cleaning service - dedicated,
               insured, and focused on doing one thing really well.
             </p>
           </div>
@@ -232,7 +232,7 @@ export default async function HomePage() {
               <p className="text-gray-400 text-sm leading-relaxed mb-6">
                 Our professional-grade process removes grease, carbon, and grime
                 that DIY cleaning can&apos;t reach. We restore grills that
-                homeowners thought were beyond saving — and we guarantee every
+                homeowners thought were beyond saving - and we guarantee every
                 job.
               </p>
               <a
@@ -246,7 +246,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Before & After — Real image slider */}
+      {/* Before & After - Real image slider */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -330,7 +330,7 @@ export default async function HomePage() {
               Our Guarantee to You
             </h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              We stand behind every cleaning with straightforward promises — no
+              We stand behind every cleaning with straightforward promises - no
               fine print.
             </p>
           </div>

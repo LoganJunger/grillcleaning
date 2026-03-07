@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Grill Cleaning Service Areas — Cincinnati & NKY",
+    title: "Grill Cleaning Service Areas - Cincinnati & NKY",
     images: [OG_IMAGE],
   },
 };
@@ -45,7 +45,7 @@ const areas = [
   {
     region: "East Side Cincinnati Grill Cleaning",
     description:
-      "We serve Hyde Park, Oakley, and the East Side's beautiful older homes — many with big patios and Weber or Napoleon grills. Same-week availability for most East Side zip codes.",
+      "We serve Hyde Park, Oakley, and the East Side's beautiful older homes - many with big patios and Weber or Napoleon grills. Same-week availability for most East Side zip codes.",
     neighborhoods: [
       "Hyde Park",
       "Oakley",
@@ -61,7 +61,7 @@ const areas = [
   {
     region: "North Cincinnati & Mason Grill Cleaning",
     description:
-      "Mason, West Chester, and the northern suburbs have newer homes with built-in outdoor kitchens and high-end grills — Traeger, Big Green Egg, and Napoleon models are everywhere up here.",
+      "Mason, West Chester, and the northern suburbs have newer homes with built-in outdoor kitchens and high-end grills - Traeger, Big Green Egg, and Napoleon models are everywhere up here.",
     neighborhoods: [
       "Mason",
       "West Chester",
@@ -90,7 +90,7 @@ const areas = [
   {
     region: "Northern Kentucky Grill Cleaning",
     description:
-      "We serve Fort Thomas, Fort Mitchell, and the surrounding NKY communities. Same pricing, same service — just across the river.",
+      "We serve Fort Thomas, Fort Mitchell, and the surrounding NKY communities. Same pricing, same service - just across the river.",
     neighborhoods: [
       "Fort Thomas",
       "Fort Mitchell",

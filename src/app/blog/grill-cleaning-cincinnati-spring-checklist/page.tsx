@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Get your grill ready for Cincinnati's grilling season with this step-by-step spring cleaning checklist. Covers gas, charcoal, pellet, and kamado grills.",
   openGraph: {
     type: "article",
-    title: "Spring Grill Cleaning Checklist — Cincinnati 2026",
+    title: "Spring Grill Cleaning Checklist - Cincinnati 2026",
     description:
       "Step-by-step checklist to get your grill ready for Cincinnati's grilling season.",
     images: [
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Spring Grill Cleaning Checklist — Cincinnati 2026",
+    title: "Spring Grill Cleaning Checklist - Cincinnati 2026",
     images: [
       "/api/og?title=Spring%20Grill%20Cleaning%20Checklist&subtitle=Cincinnati%20Homeowners%20%282026%29",
     ],
@@ -80,18 +80,18 @@ export default function Article() {
       <article className="py-16 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 prose prose-gray prose-lg">
           <p className="text-xl text-gray-600 leading-relaxed">
-            Cincinnati&apos;s grilling season typically kicks off in late March or early April — right when the weather turns and everyone starts thinking about backyard cookouts. But after sitting idle all winter, your grill needs more than just a quick heat-up before that first burger goes on. Here&apos;s a complete spring checklist.
+            Cincinnati&apos;s grilling season typically kicks off in late March or early April - right when the weather turns and everyone starts thinking about backyard cookouts. But after sitting idle all winter, your grill needs more than just a quick heat-up before that first burger goes on. Here&apos;s a complete spring checklist.
           </p>
 
           <h2 className="font-bricolage text-2xl font-bold text-gray-900 mt-10 mb-4">Step 1: Inspect Before You Clean</h2>
           <p className="text-gray-600 leading-relaxed">
-            Before touching any cleaning products, do a visual inspection. Cincinnati winters are tough on outdoor equipment — freezing temperatures, snow, and ice can cause damage you won&apos;t notice until you look.
+            Before touching any cleaning products, do a visual inspection. Cincinnati winters are tough on outdoor equipment - freezing temperatures, snow, and ice can cause damage you won&apos;t notice until you look.
           </p>
           <ul className="text-gray-600 space-y-2">
             <li><strong>Check for rust</strong> on grates, burners, and the firebox interior. Surface rust on grates can often be scrubbed off, but deep rust on burners means replacement.</li>
             <li><strong>Look for cracks</strong> in ceramic grills (Big Green Egg, Kamado Joe). Freeze-thaw cycles can cause hairline cracks in the ceramics if moisture got inside.</li>
-            <li><strong>Inspect gas connections</strong> — check the hose from the propane tank for cracks or weathering. Spider webs in burner tubes are extremely common after winter (spiders love the gas smell).</li>
-            <li><strong>Check the cover</strong> — if you used a grill cover, check for mold or mildew underneath. Cincinnati&apos;s humidity creates perfect conditions for mold growth.</li>
+            <li><strong>Inspect gas connections</strong> - check the hose from the propane tank for cracks or weathering. Spider webs in burner tubes are extremely common after winter (spiders love the gas smell).</li>
+            <li><strong>Check the cover</strong> - if you used a grill cover, check for mold or mildew underneath. Cincinnati&apos;s humidity creates perfect conditions for mold growth.</li>
           </ul>
 
           <h2 className="font-bricolage text-2xl font-bold text-gray-900 mt-10 mb-4">Step 2: Remove Everything</h2>
@@ -101,10 +101,10 @@ export default function Article() {
 
           <h2 className="font-bricolage text-2xl font-bold text-gray-900 mt-10 mb-4">Step 3: Deep Clean the Interior</h2>
           <p className="text-gray-600 leading-relaxed">
-            The firebox is where most of the carbon buildup lives. Use a grill-specific degreaser (not dish soap — it&apos;s not strong enough for carbonized grease) and a stiff brush. Scrape the walls and bottom, paying special attention to the area around the grease drain.
+            The firebox is where most of the carbon buildup lives. Use a grill-specific degreaser (not dish soap - it&apos;s not strong enough for carbonized grease) and a stiff brush. Scrape the walls and bottom, paying special attention to the area around the grease drain.
           </p>
           <p className="text-gray-600 leading-relaxed">
-            For gas grills, use a pipe cleaner or small brush to clear each burner port. Clogged ports cause uneven flame patterns — you&apos;ll notice hot spots and cold spots on the cooking surface.
+            For gas grills, use a pipe cleaner or small brush to clear each burner port. Clogged ports cause uneven flame patterns - you&apos;ll notice hot spots and cold spots on the cooking surface.
           </p>
 
           <h2 className="font-bricolage text-2xl font-bold text-gray-900 mt-10 mb-4">Step 4: Clean the Grates</h2>
@@ -114,7 +114,7 @@ export default function Article() {
           <ul className="text-gray-600 space-y-2">
             <li><strong>Stainless steel grates:</strong> Soak in hot soapy water, scrub with a non-wire brush, rinse, and dry completely.</li>
             <li><strong>Cast iron grates:</strong> Scrub with a stiff brush (no soap), rinse, dry thoroughly, then re-season with a light coat of cooking oil.</li>
-            <li><strong>Porcelain-coated grates:</strong> Use a soft brush only — wire brushes chip the coating, leading to rust underneath.</li>
+            <li><strong>Porcelain-coated grates:</strong> Use a soft brush only - wire brushes chip the coating, leading to rust underneath.</li>
           </ul>
 
           <h2 className="font-bricolage text-2xl font-bold text-gray-900 mt-10 mb-4">Step 5: Reassemble and Test</h2>
@@ -139,7 +139,7 @@ export default function Article() {
 
           <h2 className="font-bricolage text-2xl font-bold text-gray-900 mt-10 mb-4">Or Let Us Handle It</h2>
           <p className="text-gray-600 leading-relaxed">
-            This whole process takes 2-3 hours if you do it yourself. Our <Link href="/services" className="text-orange-500 hover:text-orange-600">Seasonal Tune-Up ($199)</Link> covers everything on this checklist plus a gas line inspection and performance test. We bring all the equipment and products — you just need to show us where the grill is.
+            This whole process takes 2-3 hours if you do it yourself. Our <Link href="/services" className="text-orange-500 hover:text-orange-600">Seasonal Tune-Up ($199)</Link> covers everything on this checklist plus a gas line inspection and performance test. We bring all the equipment and products - you just need to show us where the grill is.
           </p>
 
           <BlogCta />

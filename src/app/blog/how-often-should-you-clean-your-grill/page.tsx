@@ -82,12 +82,12 @@ export default function Article() {
       <article className="py-16 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 prose prose-gray prose-lg">
           <p className="text-xl text-gray-600 leading-relaxed">
-            If you&apos;re like most Cincinnati homeowners, you fire up the grill regularly between April and October. But how often should you actually <em>clean</em> it? The answer depends on how much you grill — and what &ldquo;cleaning&rdquo; really means.
+            If you&apos;re like most Cincinnati homeowners, you fire up the grill regularly between April and October. But how often should you actually <em>clean</em> it? The answer depends on how much you grill - and what &ldquo;cleaning&rdquo; really means.
           </p>
 
           <h2 className="font-bricolage text-2xl font-bold text-gray-900 mt-10 mb-4">Quick Maintenance vs. Deep Cleaning</h2>
           <p className="text-gray-600 leading-relaxed">
-            There&apos;s a big difference between the quick brush-down you do after every cookout and the deep cleaning your grill needs a few times a year. Quick maintenance — brushing the grates while they&apos;re hot, emptying the grease trap — should happen after every use. This takes five minutes and prevents buildup from becoming a bigger problem.
+            There&apos;s a big difference between the quick brush-down you do after every cookout and the deep cleaning your grill needs a few times a year. Quick maintenance - brushing the grates while they&apos;re hot, emptying the grease trap - should happen after every use. This takes five minutes and prevents buildup from becoming a bigger problem.
           </p>
           <p className="text-gray-600 leading-relaxed">
             A deep clean, however, involves disassembling the grill, degreasing all interior surfaces, cleaning the burners and heat deflectors, scrubbing the firebox, and polishing the exterior. This is the kind of cleaning that restores performance and extends the life of your grill by years.
@@ -99,7 +99,7 @@ export default function Article() {
           </p>
           <ul className="text-gray-600 space-y-2">
             <li><strong>Casual grillers (1-2x per month):</strong> One deep cleaning per year, ideally before grilling season starts in spring.</li>
-            <li><strong>Regular grillers (1-2x per week):</strong> Two deep cleanings per year — spring and fall. Grease accumulates fast at this frequency.</li>
+            <li><strong>Regular grillers (1-2x per week):</strong> Two deep cleanings per year - spring and fall. Grease accumulates fast at this frequency.</li>
             <li><strong>Heavy grillers (3+ times per week):</strong> Three cleanings per year or more. At this usage level, carbon buildup affects flavor and heat distribution significantly.</li>
           </ul>
 
@@ -126,12 +126,12 @@ export default function Article() {
             Can you deep clean a grill yourself? Absolutely. But it takes 2-3 hours, requires specialized degreasers (not dish soap), and means disassembling components you might not be comfortable putting back together. Most people try it once and decide it&apos;s not worth the effort.
           </p>
           <p className="text-gray-600 leading-relaxed" data-speakable="true">
-            In Cincinnati, professional grill cleaning typically ranges from $149 for a basic cleaning to $399 for commercial services. Seven Hills and Grill offers flat-rate pricing with no hidden fees. A professional cleaning takes about 1-2 hours, and we bring all the equipment — you don&apos;t need to do anything.
+            In Cincinnati, professional grill cleaning typically ranges from $149 for a basic cleaning to $399 for commercial services. Seven Hills and Grill offers flat-rate pricing with no hidden fees. A professional cleaning takes about 1-2 hours, and we bring all the equipment - you don&apos;t need to do anything.
           </p>
 
           <h2 className="font-bricolage text-2xl font-bold text-gray-900 mt-10 mb-4">The Bottom Line</h2>
           <p className="text-gray-600 leading-relaxed">
-            At minimum, get your grill deep cleaned once a year. If you grill regularly, twice a year is ideal. Your food will taste better, your grill will last longer, and you&apos;ll eliminate real fire and health risks. It&apos;s one of those things that&apos;s easy to put off — but makes a noticeable difference the moment it&apos;s done.
+            At minimum, get your grill deep cleaned once a year. If you grill regularly, twice a year is ideal. Your food will taste better, your grill will last longer, and you&apos;ll eliminate real fire and health risks. It&apos;s one of those things that&apos;s easy to put off - but makes a noticeable difference the moment it&apos;s done.
           </p>
 
           <BlogCta />

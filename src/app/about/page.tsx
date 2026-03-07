@@ -8,7 +8,7 @@ const OG_IMAGE = `${SITE_URL}/api/og?title=${encodeURIComponent("About Seven Hil
 export const metadata: Metadata = {
   title: "About Seven Hills and Grill | Cincinnati Grill Cleaning Experts",
   description:
-    "Learn about Seven Hills and Grill — a locally owned Cincinnati grill cleaning company. Fully insured with background-checked technicians serving the Greater Cincinnati area.",
+    "Learn about Seven Hills and Grill - a locally owned Cincinnati grill cleaning company. Fully insured with background-checked technicians serving the Greater Cincinnati area.",
   openGraph: {
     title: "About Seven Hills and Grill | Cincinnati Grill Cleaning Experts",
     description:
@@ -89,7 +89,7 @@ export default function AboutPage() {
               </h2>
               <div className="text-gray-600 space-y-4 leading-relaxed">
                 <p>
-                  Hi, I&apos;m Cooper — a Cincinnati native and outdoor cooking
+                  Hi, I&apos;m Cooper - a Cincinnati native and outdoor cooking
                   enthusiast. I started Seven Hills and Grill after spending an
                   entire Saturday trying to deep clean a Weber Genesis that
                   hadn&apos;t been touched in years. The thought was simple:
@@ -98,14 +98,14 @@ export default function AboutPage() {
                 </p>
                 <p>
                   So I figured it out myself. Researched the right products
-                  (food-safe, professional-grade degreasers — not the stuff from
+                  (food-safe, professional-grade degreasers - not the stuff from
                   the hardware store). Learned the differences between cleaning a
                   gas grill vs. a Big Green Egg vs. a commercial flat-top.
                   Practiced on friends&apos; and family&apos;s grills until I
                   had the process dialed in.
                 </p>
                 <p>
-                  Now I&apos;m bringing that service to the Cincinnati area —
+                  Now I&apos;m bringing that service to the Cincinnati area -
                   insured, background-checked, and ready to make your grill look
                   and perform like new. Every cleaning comes with before-and-after
                   photos and a 100% satisfaction guarantee.
@@ -116,7 +116,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* What We Believe — prose, not card grid */}
+      {/* What We Believe - prose, not card grid */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-bricolage text-2xl font-bold text-gray-900 mb-6">
@@ -125,7 +125,7 @@ export default function AboutPage() {
           <div className="text-gray-600 space-y-4 leading-relaxed">
             <p>
               We believe in doing work you can actually see. That&apos;s why
-              every job comes with before-and-after photos — not because
+              every job comes with before-and-after photos - not because
               it&apos;s a marketing gimmick, but because the difference should
               be obvious. If it isn&apos;t, we haven&apos;t done our job.
             </p>
@@ -137,7 +137,7 @@ export default function AboutPage() {
               just cleaned.
             </p>
             <p>
-              If something isn&apos;t right, we come back and fix it — no
+              If something isn&apos;t right, we come back and fix it - no
               questions, no awkward phone calls. We&apos;d rather lose money on
               a re-clean than lose a customer. That&apos;s not a corporate
               policy. It&apos;s just how we think a local business should work.
@@ -146,7 +146,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* AEO — Is professional grill cleaning worth it? */}
+      {/* AEO - Is professional grill cleaning worth it? */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-bricolage text-2xl font-bold text-gray-900 mb-4">
@@ -158,7 +158,7 @@ export default function AboutPage() {
             even cooking, extends the lifespan of your grill by preventing rust
             and corrosion, and eliminates grease-based fire hazards. Most
             homeowners who try a professional cleaning once say the difference
-            is immediately obvious — and they book again the following year.
+            is immediately obvious - and they book again the following year.
           </p>
         </div>
       </section>

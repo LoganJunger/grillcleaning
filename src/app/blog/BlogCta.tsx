@@ -4,7 +4,7 @@ export default function BlogCta() {
   return (
     <div className="bg-orange-50 border border-orange-200 rounded-xl p-8 mt-12">
       <h3 className="font-bricolage text-xl font-bold text-gray-900 mb-2">
-        Skip the hassle — let us handle it.
+        Skip the hassle - let us handle it.
       </h3>
       <p className="text-gray-600 mb-4">
         Seven Hills and Grill provides professional grill cleaning across

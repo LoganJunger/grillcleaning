@@ -27,7 +27,7 @@ export default function AnnouncementBar() {
   return (
     <div className="bg-orange-500 text-white text-center text-sm py-2.5 px-4 relative">
       <span className="hidden sm:inline">
-        🔥 Spring Grilling Season — Book by May 31 and save $20. Use code{" "}
+        🔥 Spring Grilling Season - Book by May 31 and save $20. Use code{" "}
         <strong>GRILL20</strong> at checkout.
       </span>
       <span className="sm:hidden">

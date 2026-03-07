@@ -81,18 +81,18 @@ export default function Article() {
       <article className="py-16 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 prose prose-gray prose-lg">
           <p className="text-xl text-gray-600 leading-relaxed">
-            Gas grills and charcoal grills cook differently, and they get dirty differently too. If you&apos;re using the same cleaning approach for both, you&apos;re probably not getting the best results — and you might be shortening your grill&apos;s life.
+            Gas grills and charcoal grills cook differently, and they get dirty differently too. If you&apos;re using the same cleaning approach for both, you&apos;re probably not getting the best results - and you might be shortening your grill&apos;s life.
           </p>
 
           <h2 className="font-bricolage text-2xl font-bold text-gray-900 mt-10 mb-4">Gas Grill Cleaning: The Key Challenges</h2>
           <p className="text-gray-600 leading-relaxed">
-            Gas grills (Weber Spirit and Genesis, Napoleon, Char-Broil, and similar models) have more components than charcoal grills, which means more things to clean — and more places for grease to hide.
+            Gas grills (Weber Spirit and Genesis, Napoleon, Char-Broil, and similar models) have more components than charcoal grills, which means more things to clean - and more places for grease to hide.
           </p>
           <p className="text-gray-600 leading-relaxed">
-            <strong>Grease management systems</strong> are the #1 issue with gas grills. Most gas grills have a grease tray or grease cup that catches drippings. When these overflow or get clogged, grease pools inside the firebox, creating a serious fire hazard. We see this on nearly every gas grill we clean — homeowners don&apos;t realize how much grease accumulates below the grates.
+            <strong>Grease management systems</strong> are the #1 issue with gas grills. Most gas grills have a grease tray or grease cup that catches drippings. When these overflow or get clogged, grease pools inside the firebox, creating a serious fire hazard. We see this on nearly every gas grill we clean - homeowners don&apos;t realize how much grease accumulates below the grates.
           </p>
           <p className="text-gray-600 leading-relaxed">
-            <strong>Burner tubes</strong> can become clogged with spider webs and insect nests (yes, really — this is extremely common in Cincinnati where grills sit idle during winter). Clogged burner ports cause uneven heating and can redirect gas flow in dangerous ways.
+            <strong>Burner tubes</strong> can become clogged with spider webs and insect nests (yes, really - this is extremely common in Cincinnati where grills sit idle during winter). Clogged burner ports cause uneven heating and can redirect gas flow in dangerous ways.
           </p>
           <p className="text-gray-600 leading-relaxed">
             <strong>Heat deflectors and flavorizer bars</strong> (the angled metal plates above the burners) accumulate layers of carbonized grease over time. This affects heat distribution and can cause unexpected flare-ups.
@@ -103,10 +103,10 @@ export default function Article() {
             Charcoal grills (Weber Kettle, Big Green Egg, Kamado Joe) have fewer mechanical components but present their own challenges.
           </p>
           <p className="text-gray-600 leading-relaxed">
-            <strong>Ash buildup</strong> is the biggest issue. Charcoal ash is corrosive — if left sitting in the bowl for weeks, it absorbs moisture and accelerates rust. Many charcoal grill owners don&apos;t empty the ash between uses, leading to premature deterioration of the bowl and vents.
+            <strong>Ash buildup</strong> is the biggest issue. Charcoal ash is corrosive - if left sitting in the bowl for weeks, it absorbs moisture and accelerates rust. Many charcoal grill owners don&apos;t empty the ash between uses, leading to premature deterioration of the bowl and vents.
           </p>
           <p className="text-gray-600 leading-relaxed">
-            <strong>Creosote on ceramic grills</strong> (Big Green Egg, Kamado Joe) is a unique challenge. Ceramic kamado grills develop a layer of creosote — a tar-like residue — on the interior walls. While a thin layer is normal and even beneficial (it seasons the grill), excessive buildup can flake off onto food and affect airflow.
+            <strong>Creosote on ceramic grills</strong> (Big Green Egg, Kamado Joe) is a unique challenge. Ceramic kamado grills develop a layer of creosote - a tar-like residue - on the interior walls. While a thin layer is normal and even beneficial (it seasons the grill), excessive buildup can flake off onto food and affect airflow.
           </p>
           <p className="text-gray-600 leading-relaxed">
             <strong>Grate care</strong> also differs. Cast-iron grates (common on charcoal grills) need to be seasoned, not scrubbed with steel wool. Stainless steel grates (common on gas grills) can handle more aggressive cleaning but rust if the protective coating is damaged.
@@ -137,7 +137,7 @@ export default function Article() {
             For either type, we recommend professional cleaning once or twice a year. Gas grills benefit particularly because the disassembly process (removing burners, heat deflectors, grates, and grease management components) is time-consuming and requires knowing how to reassemble correctly. Kamado and ceramic grills benefit because improper creosote removal can damage the ceramic interior.
           </p>
           <p className="text-gray-600 leading-relaxed">
-            At <Link href="/services" className="text-orange-500 hover:text-orange-600">Seven Hills and Grill</Link>, we clean both gas and charcoal grills using type-specific processes. Our technicians know the differences between a Weber Spirit and a Big Green Egg — and clean each one accordingly.
+            At <Link href="/services" className="text-orange-500 hover:text-orange-600">Seven Hills and Grill</Link>, we clean both gas and charcoal grills using type-specific processes. Our technicians know the differences between a Weber Spirit and a Big Green Egg - and clean each one accordingly.
           </p>
 
           <BlogCta />

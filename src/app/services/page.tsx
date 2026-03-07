@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title:
     "Grill Cleaning Services & Pricing | Cincinnati OH | Seven Hills and Grill",
   description:
-    "View our grill cleaning pricing — Basic ($149), Seasonal Tune-Up ($199), Deep Clean ($249), Commercial ($399). No hidden fees. Every service includes a satisfaction guarantee.",
+    "View our grill cleaning pricing - Basic ($149), Seasonal Tune-Up ($199), Deep Clean ($249), Commercial ($399). No hidden fees. Every service includes a satisfaction guarantee.",
   openGraph: {
     title: "Grill Cleaning Services & Pricing | Seven Hills and Grill",
     description:
@@ -328,7 +328,7 @@ export default async function ServicesPage() {
       <section className="py-20 bg-white" data-speakable="true">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-bricolage text-3xl font-bold text-gray-900 text-center mb-12">
-            Grill Cleaning FAQs — Common Questions from Cincinnati Homeowners
+            Grill Cleaning FAQs - Common Questions from Cincinnati Homeowners
           </h2>
           <FaqAccordion faqs={faqs} />
         </div>

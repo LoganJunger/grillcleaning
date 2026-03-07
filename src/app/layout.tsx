@@ -8,7 +8,7 @@ import AnnouncementBar from "@/components/AnnouncementBar";
 const SITE_NAME = "Seven Hills and Grill";
 const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://sevenhillsandgrill.com";
 const SITE_DESCRIPTION =
-  "Professional grill cleaning service in Cincinnati, OH. We clean Weber, Traeger, Big Green Egg & all grill types at your home. Starting at $149. Book online — same-week availability.";
+  "Professional grill cleaning service in Cincinnati, OH. We clean Weber, Traeger, Big Green Egg & all grill types at your home. Starting at $149. Book online - same-week availability.";
 
 const OG_IMAGE = `${SITE_URL}/api/og?title=${encodeURIComponent("Seven Hills and Grill")}&subtitle=${encodeURIComponent("Professional Grill Cleaning · Cincinnati, OH")}`;
 

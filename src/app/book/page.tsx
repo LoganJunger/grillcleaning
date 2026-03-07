@@ -9,7 +9,7 @@ const SITE_URL =
 const OG_IMAGE = `${SITE_URL}/api/og?title=${encodeURIComponent("Book a Grill Cleaning")}&subtitle=${encodeURIComponent("Same-Week Availability · Starting at $149")}`;
 
 export const metadata: Metadata = {
-  title: "Book a Grill Cleaning | Seven Hills and Grill — Cincinnati OH",
+  title: "Book a Grill Cleaning | Seven Hills and Grill - Cincinnati OH",
   description:
     "Book your professional grill cleaning in Cincinnati online. Choose your service, pick a time, and we come to you. No payment required to book. Same-week availability.",
   openGraph: {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Book a Grill Cleaning — Cincinnati OH",
+    title: "Book a Grill Cleaning - Cincinnati OH",
     images: [OG_IMAGE],
   },
 };

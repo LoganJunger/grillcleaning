@@ -21,7 +21,7 @@ export default function Footer() {
               bring your grill back to life.
             </p>
             <p className="text-xs text-gray-500">Licensed & Insured</p>
-            {/* Social links — placeholder URLs, add rel="noopener noreferrer" */}
+            {/* Social links - placeholder URLs, add rel="noopener noreferrer" */}
             <div className="flex gap-3 mt-4">
               <a href="https://www.facebook.com/sevenhillsandgrill" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
