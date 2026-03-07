@@ -8,7 +8,7 @@ import AnnouncementBar from "@/components/AnnouncementBar";
 const SITE_NAME = "Seven Hills and Grill";
 const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://sevenhillsandgrill.com";
 const SITE_DESCRIPTION =
-  "Cincinnati's top-rated professional grill cleaning service. We clean Weber, Traeger, Big Green Egg & all grill types at your home. Starting at $149. Book online — same-week availability.";
+  "Professional grill cleaning service in Cincinnati, OH. We clean Weber, Traeger, Big Green Egg & all grill types at your home. Starting at $149. Book online — same-week availability.";
 
 const OG_IMAGE = `${SITE_URL}/api/og?title=${encodeURIComponent("Seven Hills and Grill")}&subtitle=${encodeURIComponent("Professional Grill Cleaning · Cincinnati, OH")}`;
 
@@ -147,37 +147,6 @@ export default function RootLayout({
           opens: "08:00",
           closes: "18:00",
         },
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: "4.9",
-          reviewCount: "127",
-        },
-        review: [
-          {
-            "@type": "Review",
-            reviewRating: { "@type": "Rating", ratingValue: "5" },
-            author: { "@type": "Person", name: "Mike R." },
-            reviewBody:
-              "I couldn't believe the difference. My 10-year-old Weber looked brand new after their deep clean service. Absolutely worth every penny.",
-            datePublished: "2025-04-15",
-          },
-          {
-            "@type": "Review",
-            reviewRating: { "@type": "Rating", ratingValue: "5" },
-            author: { "@type": "Person", name: "Sarah T." },
-            reviewBody:
-              "Super easy to book and the technician was on time, professional, and thorough. I'll be using them every spring from now on.",
-            datePublished: "2025-05-02",
-          },
-          {
-            "@type": "Review",
-            reviewRating: { "@type": "Rating", ratingValue: "5" },
-            author: { "@type": "Person", name: "James W." },
-            reviewBody:
-              "They showed up right on time, cleaned our Napoleon grill in under 90 minutes, and it looked absolutely pristine.",
-            datePublished: "2025-08-20",
-          },
-        ],
         sameAs: [
           "https://www.facebook.com/sevenhillsandgrill",
           "https://www.instagram.com/sevenhillsandgrill",
@@ -187,10 +156,10 @@ export default function RootLayout({
           "https://maps.google.com/?q=Seven+Hills+and+Grill+Cincinnati+OH",
         currenciesAccepted: "USD",
         paymentAccepted: "Cash, Credit Card, Venmo, Zelle",
-        foundingDate: "2023",
+        foundingDate: "2026",
         numberOfEmployees: {
           "@type": "QuantitativeValue",
-          value: 3,
+          value: 1,
         },
         mentions: [
           { "@type": "Brand", name: "Weber" },
@@ -296,7 +265,7 @@ export default function RootLayout({
             "@type": "HowToStep",
             position: 2,
             name: "We Come to You",
-            text: "A certified technician arrives at your home with all equipment. No preparation needed.",
+            text: "We arrive at your home with all equipment and supplies. No preparation needed on your end.",
           },
           {
             "@type": "HowToStep",

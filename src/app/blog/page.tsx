@@ -4,11 +4,11 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Grill Cleaning Tips & Guides | Cincinnati Grill Care Blog",
   description:
-    "Expert grill cleaning tips, maintenance guides, and seasonal checklists from Cincinnati's top-rated grill cleaning professionals. Learn how to keep your grill in peak condition.",
+    "Grill cleaning tips, maintenance guides, and seasonal checklists from Seven Hills and Grill in Cincinnati. Learn how to keep your grill in peak condition.",
   openGraph: {
     title: "Grill Cleaning Tips & Guides | Seven Hills and Grill Blog",
     description:
-      "Expert grill cleaning tips and maintenance guides from Cincinnati's top-rated grill cleaning professionals.",
+      "Grill cleaning tips and maintenance guides from Seven Hills and Grill in Cincinnati.",
     images: [
       {
         url: "/api/og?title=Grill%20Cleaning%20Blog&subtitle=Tips%20%26%20Guides%20from%20Cincinnati%27s%20Grill%20Experts",

@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title:
     "How Often Should You Clean Your Grill? A Cincinnati Grillmaster's Guide",
   description:
-    "Learn the ideal grill cleaning frequency based on usage, the health risks of dirty grills, and when to hire a professional. Expert advice from Cincinnati's top grill cleaners.",
+    "Learn the ideal grill cleaning frequency based on usage, the health risks of dirty grills, and when to hire a professional. Tips from Seven Hills and Grill in Cincinnati.",
   openGraph: {
     type: "article",
     title:

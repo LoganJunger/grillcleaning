@@ -8,11 +8,11 @@ const OG_IMAGE = `${SITE_URL}/api/og?title=${encodeURIComponent("About Seven Hil
 export const metadata: Metadata = {
   title: "About Seven Hills and Grill | Cincinnati Grill Cleaning Experts",
   description:
-    "Learn about Seven Hills and Grill — Cincinnati's trusted grill cleaning company. Locally owned, fully insured, background-checked technicians serving the tri-state area since 2023.",
+    "Learn about Seven Hills and Grill — a locally owned Cincinnati grill cleaning company. Fully insured with background-checked technicians serving the Greater Cincinnati area.",
   openGraph: {
     title: "About Seven Hills and Grill | Cincinnati Grill Cleaning Experts",
     description:
-      "Locally owned, fully insured grill cleaning serving Cincinnati since 2023.",
+      "Locally owned, fully insured grill cleaning serving Greater Cincinnati.",
     images: [{ url: OG_IMAGE, width: 1200, height: 630 }],
   },
   twitter: {
@@ -40,13 +40,6 @@ const breadcrumbJsonLd = {
     },
   ],
 };
-
-const milestones = [
-  { year: "2023", label: "Founded in Cincinnati" },
-  { year: "2024", label: "250th grill cleaned" },
-  { year: "2025", label: "Expanded to Northern Kentucky" },
-  { year: "2026", label: "500+ cleanings and counting" },
-];
 
 export default function AboutPage() {
   return (
@@ -89,34 +82,33 @@ export default function AboutPage() {
             </div>
             <div>
               <span className="text-xs font-semibold text-orange-500 tracking-wide uppercase">
-                Meet the Owner
+                Meet Cooper
               </span>
               <h2 className="font-bricolage text-2xl font-bold text-gray-900 mt-1 mb-4">
-                How It Started
+                Why Seven Hills and Grill
               </h2>
               <div className="text-gray-600 space-y-4 leading-relaxed">
                 <p>
-                  Seven Hills and Grill started the way a lot of good ideas do
-                  — out of frustration. After spending an entire Saturday trying
-                  to deep clean a Weber Genesis that hadn&apos;t been touched in
-                  three years, the thought was simple: there has to be someone
-                  who does this professionally. Turns out, in Cincinnati, there
-                  really wasn&apos;t. Not well, at least.
+                  Hi, I&apos;m Cooper — a Cincinnati native and outdoor cooking
+                  enthusiast. I started Seven Hills and Grill after spending an
+                  entire Saturday trying to deep clean a Weber Genesis that
+                  hadn&apos;t been touched in years. The thought was simple:
+                  there has to be someone who does this professionally. Turns
+                  out, in Cincinnati, the options are limited.
                 </p>
                 <p>
-                  So we figured it out ourselves. Researched the right products
+                  So I figured it out myself. Researched the right products
                   (food-safe, professional-grade degreasers — not the stuff from
                   the hardware store). Learned the differences between cleaning a
                   gas grill vs. a Big Green Egg vs. a commercial flat-top.
-                  Started with friends&apos; grills, then neighbors, then word
-                  got around.
+                  Practiced on friends&apos; and family&apos;s grills until I
+                  had the process dialed in.
                 </p>
                 <p>
-                  Today we&apos;re a small team of three, all Cincinnati
-                  natives, all background-checked and insured. We clean 10-15
-                  grills a week across Greater Cincinnati and Northern Kentucky.
-                  It&apos;s not a franchise and it&apos;s not a side gig —
-                  it&apos;s what we do full-time, and we take real pride in it.
+                  Now I&apos;m bringing that service to the Cincinnati area —
+                  insured, background-checked, and ready to make your grill look
+                  and perform like new. Every cleaning comes with before-and-after
+                  photos and a 100% satisfaction guarantee.
                 </p>
               </div>
             </div>
@@ -154,29 +146,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* By the Numbers Timeline */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-bricolage text-2xl font-bold text-gray-900 text-center mb-12">
-            By the Numbers
-          </h2>
-          <div className="relative">
-            <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-orange-200 -translate-y-1/2" />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {milestones.map((m) => (
-                <div key={m.year} className="relative text-center">
-                  <div className="relative z-10 w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold text-sm shadow-md">
-                    {m.year.slice(2)}
-                  </div>
-                  <p className="font-bold text-gray-900">{m.year}</p>
-                  <p className="text-sm text-gray-500 mt-1">{m.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* AEO — Is professional grill cleaning worth it? */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -201,8 +170,7 @@ export default function AboutPage() {
             Ready to Experience the Difference?
           </h2>
           <p className="text-orange-100 mb-8 text-lg">
-            Book your first cleaning and see why hundreds of Cincinnati
-            homeowners trust us.
+            Book your cleaning and see why we guarantee every job.
           </p>
           <Link
             href="/book"
